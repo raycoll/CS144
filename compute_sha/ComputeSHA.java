@@ -5,18 +5,19 @@ import javax.xml.bind.DatatypeConverter;
 
 
 public class ComputeSHA {
+	static final int BUF_SIZ = 1024;
+
 	public static void main(String[] args) {
 
 		/* Open input file for reading */
-		BufferedReader br = null;
+		FileInputStream f = null;
 		try {
-			br  = new BufferedReader(new FileReader(args[0]));
-		}
-		catch(FileNotFoundException f) {
-			System.out.println("Could not open file! " + f.toString());
+			f = new FileInputStream(args[0]);
+		} catch(Exception e) {
+			System.err.println("Failed to open file! " + e.toString());
 			System.exit(1);
 		}
-
+	
 		/* Create the SHA-1 MessageDigest instance */
 		MessageDigest md = null;
 		try {
@@ -29,10 +30,18 @@ public class ComputeSHA {
 
 		/* Compute the digest for the input */ 
 		try {
-			String s = br.readLine();
-			while(s != null) {
-				md.update(s.getBytes());
-				s = br.readLine();
+			byte[] buf = new byte[BUF_SIZ];
+			while(true) {
+				int amt = f.read(buf);
+				if (amt < 0) {
+					break;
+				}
+				
+				md.update(buf,0,amt); // add buffer to current digest
+				
+				if (amt < BUF_SIZ) {
+					break;
+				}
 			}
 		}
 		catch(IOException e) {
@@ -42,7 +51,7 @@ public class ComputeSHA {
 
 		/* Output the generated digest */
 		byte[] digestBytes = md.digest();
-		System.out.println(DatatypeConverter.printHexBinary(digestBytes));	
+		System.out.print(DatatypeConverter.printHexBinary(digestBytes).toLowerCase());	
 	}
 }
 
