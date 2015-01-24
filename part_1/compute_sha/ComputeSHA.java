@@ -21,7 +21,7 @@ public class ComputeSHA {
 		/* Create the SHA-1 MessageDigest instance */
 		MessageDigest md = null;
 		try {
-			md = MessageDigest.getInstance("SHA");
+			md = MessageDigest.getInstance("SHA-1");
 		}
 		catch(NoSuchAlgorithmException n) {
 			System.out.println("Message digest algorithm not supported!");
