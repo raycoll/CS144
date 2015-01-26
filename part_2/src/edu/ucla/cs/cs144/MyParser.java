@@ -51,10 +51,17 @@ class MyParser {
     static final String columnSeparator = "|*|";
     static DocumentBuilder builder;
    
-    static final String ItemLoadFile = "./Item.load";
-    static final String UserLoadFile = "./User.load";
-    static final String BidLoadFile = "./Bid.load";
-    static final String ItemCategoryLoadFile = "./ItemCategory.load";
+    /* Names of the output load files */
+    static final String ItemLFName = "./Item.load";
+    static final String UserLFName = "./User.load";
+    static final String BidLFName = "./Bid.load";
+    static final String ItemCategoryLFName = "./ItemCategory.load";
+   
+    /* File objects for the output load files */ 
+    BufferedWriter ItemLF;
+    BufferedWriter UserLF;
+    BufferedWriter BidLF;
+    BufferedWriter ItemCategoryLF;
      
     static final String[] typeName = {
     "none",
@@ -170,18 +177,6 @@ class MyParser {
 
     /* Opens the output mysql load files for the 4 tables */
     static void initLoadFiles(); 
-
-    /* Dump itemRows to corresponding load file */
-    static void dumpItem();
-
-    /* Dump userRows to corresponding load file */
-    static void dumpUser();
-
-    /* Dump bidRows to corresponding load file */
-    static void dumpBid();
-
-    /* Dump itemCategoryRows to corresponding load file */
-    static void dumpItemCategory();
 
     /* Dumps rows to the User load file.  
      * User(UID, srat, brat, long, lat, country)
