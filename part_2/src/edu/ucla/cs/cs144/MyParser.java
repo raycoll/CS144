@@ -42,6 +42,7 @@ import org.xml.sax.ErrorHandler;
 
 
 class MyParser {
+    /* Hold current rows. not necessarily written to load files*/
     HashMap<Integer, String> userRows;
     Vector<String> itemRows;
     Vector<String> bidRows;
@@ -166,9 +167,21 @@ class MyParser {
             return nf.format(am).substring(1);
         }
     }
-    
+
     /* Opens the output mysql load files for the 4 tables */
     static void initLoadFiles(); 
+
+    /* Dump itemRows to corresponding load file */
+    static void dumpItem();
+
+    /* Dump userRows to corresponding load file */
+    static void dumpUser();
+
+    /* Dump bidRows to corresponding load file */
+    static void dumpBid();
+
+    /* Dump itemCategoryRows to corresponding load file */
+    static void dumpItemCategory();
 
     /* Dumps rows to the User load file.  
      * User(UID, srat, brat, long, lat, country)
