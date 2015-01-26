@@ -42,10 +42,19 @@ import org.xml.sax.ErrorHandler;
 
 
 class MyParser {
-    
+    String itemRows;
+    String userRows;
+    String bidRows;
+    String itemCategoryRows;
+
     static final String columnSeparator = "|*|";
     static DocumentBuilder builder;
-    
+   
+    static final ItemsLoadFile = "";
+    static final UsersLoadFIle = "";
+    static final BidsLoadFile = "";
+    static final ItemCategoryLoadFile = "";
+     
     static final String[] typeName = {
 	"none",
 	"Element",
@@ -158,6 +167,41 @@ class MyParser {
         }
     }
     
+    /* Opens the output mysql load files for the 4 tables */
+    static void initLoadFiles(); 
+
+    /* Adds a row or updates an existing row in the User load file.  
+     * User(UID, srat, brat, long, lat, country)
+     */
+    static int updateUserLF(ArrayList<String> cols);
+    
+    /* Adds a row to ItemCategory load file
+     * ItemCategory(IID, Category)
+     */
+    static int updateItemCategoryLF(ArrayList<String> cols);
+   
+    /* Adds a row to the Bids load file
+     * Bids(UID,IID,time, amt)
+     */ 
+    static int updateBidLF(ArrayList<String> cols);
+    
+    /* Adds a row to Item load file
+     * Item(IID,name,bPrice,sPrice,numBids,long,lat,country,start,end,SellerID)
+     */
+    static int updateItemLF(ArrayList<String> cols);
+    
+    /* Parses an item node  
+     */
+    static void parseItem(Element e);
+
+    /* Parses a bid node 
+     */
+    static void parseBid(Element e);
+
+    /* Parses a bidder node 
+     */
+    static void parseBidder(Element e);
+
     /* Process one items-???.xml file.
      */
     static void processFile(File xmlFile) {
@@ -183,7 +227,10 @@ class MyParser {
         /* Fill in code here (you will probably need to write auxiliary
             methods). */
         
-        
+        /* Handle each item */
+        for ( Element curItem : getElementsByTagNameNR(doc, "Item")) {
+            parseItem(curItem);
+        } 
         
         /**************************************************************/
         
