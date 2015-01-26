@@ -50,10 +50,10 @@ class MyParser {
     static final String columnSeparator = "|*|";
     static DocumentBuilder builder;
    
-    static final ItemsLoadFile = "";
-    static final UsersLoadFIle = "";
-    static final BidsLoadFile = "";
-    static final ItemCategoryLoadFile = "";
+    static final ItemLoadFile = "./Item.load";
+    static final UserLoadFIle = "./User.load";
+    static final BidLoadFile = "./Bid.load";
+    static final ItemCategoryLoadFile = "./ItemCategory.load";
      
     static final String[] typeName = {
 	"none",
