@@ -168,6 +168,11 @@ class MyParser {
         }
     }
 
+    /* Adds a new column to the row */
+    String addColumnToRow(String row, String col) {
+        return row + columnSeparator + col;
+    }
+
     /* Opens the output mysql load files for the 4 tables */
     static void initLoadFiles(); 
 
