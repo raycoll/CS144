@@ -42,10 +42,10 @@ import org.xml.sax.ErrorHandler;
 
 
 class MyParser {
-    String itemRows;
-    String userRows;
-    String bidRows;
-    String itemCategoryRows;
+    HashMap<Integer, String> userRows;
+    Vector<String> itemRows;
+    Vector<String> bidRows;
+    Vector<String> itemCategoryRows;
 
     static final String columnSeparator = "|*|";
     static DocumentBuilder builder;
@@ -170,35 +170,38 @@ class MyParser {
     /* Opens the output mysql load files for the 4 tables */
     static void initLoadFiles(); 
 
-    /* Adds a row or updates an existing row in the User load file.  
+    /* Dumps rows to the User load file.  
      * User(UID, srat, brat, long, lat, country)
      */
-    static int updateUserLF(ArrayList<String> cols);
+    static int updateUserLF();
     
-    /* Adds a row to ItemCategory load file
+    /* Dumps row to the ItemCategory load file
      * ItemCategory(IID, Category)
      */
-    static int updateItemCategoryLF(ArrayList<String> cols);
+    static int updateItemCategoryLF();
    
-    /* Adds a row to the Bids load file
+    /* Dumps rows to the Bids load file
      * Bids(UID,IID,time, amt)
      */ 
-    static int updateBidLF(ArrayList<String> cols);
+    static int updateBidLF();
     
-    /* Adds a row to Item load file
+    /* Dumps rows to Item load file
      * Item(IID,name,bPrice,sPrice,numBids,long,lat,country,start,end,SellerID)
      */
-    static int updateItemLF(ArrayList<String> cols);
+    static int updateItemLF();
     
-    /* Parses an item node  
+    /* Parses an item node
+     * Adds row(s) to itemRows,itemCategoryRows,bidRows,userRows  
      */
     static void parseItem(Element e);
 
     /* Parses a bid node 
+     * Adds row(s) to bidRows and userRows
      */
     static void parseBid(Element e);
 
     /* Parses a bidder node 
+     * Adds row(s) to userRows
      */
     static void parseBidder(Element e);
 
