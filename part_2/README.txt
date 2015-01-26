@@ -19,14 +19,14 @@ Bids(User_ID,
 Items(Item_ID,
       Name,
       Buy_Price,
-      Reserve_Price,
+      Start_Price,
       Number_of_Bids,
-      Location,
+      Long,
+      Lat,
       Country,
       Started,
       Ends,
       User_ID,
-      Description,
       PRIMARY KEY(Item_ID)
     )
 Categories(Item_ID,
@@ -36,8 +36,7 @@ Categories(Item_ID,
 
 2. User_ID -> Sell_Rating, Buy_Rating, Long, Lat, Country
 User_ID, Item_ID, Time -> Amount
-Item_ID -> Name, Buy_Price, Reserve_Price, Number_of_Bids, Location, Country, Started, Ends, User_ID, Description
-
+Item_ID -> Name, Buy_Price, Start_Price, Number_of_Bids, Long, Lat, Country, Started, Ends, User_ID
 
 3. Yes our relations are in BCNF
 
