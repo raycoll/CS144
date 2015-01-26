@@ -51,25 +51,25 @@ class MyParser {
     static final String columnSeparator = "|*|";
     static DocumentBuilder builder;
    
-    static final ItemLoadFile = "./Item.load";
-    static final UserLoadFIle = "./User.load";
-    static final BidLoadFile = "./Bid.load";
-    static final ItemCategoryLoadFile = "./ItemCategory.load";
+    static final String ItemLoadFile = "./Item.load";
+    static final String UserLoadFile = "./User.load";
+    static final String BidLoadFile = "./Bid.load";
+    static final String ItemCategoryLoadFile = "./ItemCategory.load";
      
     static final String[] typeName = {
-	"none",
-	"Element",
-	"Attr",
-	"Text",
-	"CDATA",
-	"EntityRef",
-	"Entity",
-	"ProcInstr",
-	"Comment",
-	"Document",
-	"DocType",
-	"DocFragment",
-	"Notation",
+    "none",
+    "Element",
+    "Attr",
+    "Text",
+    "CDATA",
+    "EntityRef",
+    "Entity",
+    "ProcInstr",
+    "Comment",
+    "Document",
+    "DocType",
+    "DocFragment",
+    "Notation",
     };
     
     static class MyErrorHandler implements ErrorHandler {
@@ -168,11 +168,6 @@ class MyParser {
         }
     }
 
-    /* Adds a new column to the row */
-    String addColumnToRow(String row, String col) {
-        return row + columnSeparator + col;
-    }
-
     /* Opens the output mysql load files for the 4 tables */
     static void initLoadFiles(); 
 
@@ -249,7 +244,7 @@ class MyParser {
             methods). */
         
         /* Handle each item */
-        for ( Element curItem : getElementsByTagNameNR(doc, "Item")) {
+        for ( Element curItem : getElementsByTagNameNR(doc.getDocumentElement(), "Item")) {
             parseItem(curItem);
         } 
         
