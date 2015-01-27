@@ -176,42 +176,78 @@ class MyParser {
     }
 
     /* Opens the output mysql load files for the 4 tables */
-    static void initLoadFiles(); 
+    //static void initLoadFiles(); 
 
     /* Dumps rows to the User load file.  
      * User(UID, srat, brat, long, lat, country)
      */
-    static int updateUserLF();
+    //static int updateUserLF();
     
     /* Dumps row to the ItemCategory load file
      * ItemCategory(IID, Category)
      */
-    static int updateItemCategoryLF();
+    //static int updateItemCategoryLF();
    
     /* Dumps rows to the Bids load file
      * Bids(UID,IID,time, amt)
      */ 
-    static int updateBidLF();
+    //static int updateBidLF();
     
     /* Dumps rows to Item load file
      * Item(IID,name,bPrice,sPrice,numBids,long,lat,country,start,end,SellerID)
      */
-    static int updateItemLF();
+    //static int updateItemLF();
     
     /* Parses an item node
      * Adds row(s) to itemRows,itemCategoryRows,bidRows,userRows  
      */
-    static void parseItem(Element e);
+    static void parseItem(Element e){
+
+       String id = e.getAttribute("ItemID");
+       String name = getElementTextByTagNameNR(e, "Name"); 
+
+       String buy_price = getElementTextByTagNameNR(e, "Buy_Price");
+       if(buy_price == "") {
+          buy_price="null"; //What are we using for null? \N?
+       }
+ 
+       String start_price = getElementTextByTagNameNR(e, "First_Bid");
+       String number_of_bids = getElementTextByTagNameNR(e, "Number_of_Bids");
+       
+       //Latitude and Longitude are Location attributes
+       Element loc = getElementByTagNameNR(e, "Location");
+       String lat = loc.getAttribute("Latitude");
+       String lon = loc.getAttribute("Longitude");
+
+       String country = getElementTextByTagNameNR(e, "Country");       
+       String started = getElementTextByTagNameNR(e, "Started");
+       String ends = getElementTextByTagNameNR(e, "Ends");
+
+       //UserID is Seller attribute
+       String user_id = getElementByTagNameNR(e, "Seller").getAttribute("UserID");
+       
+       System.out.println(id);  
+       System.out.println(name);
+       System.out.println(buy_price);
+       System.out.println(start_price);
+       System.out.println(number_of_bids);
+       System.out.println(lat);
+       System.out.println(lon);
+       System.out.println(country);
+       System.out.println(started);
+       System.out.println(ends);
+       System.out.println(user_id);   
+   }
 
     /* Parses a bid node 
      * Adds row(s) to bidRows and userRows
      */
-    static void parseBid(Element e);
+    //static void parseBid(Element e);
 
     /* Parses a bidder node 
      * Adds row(s) to userRows
      */
-    static void parseBidder(Element e);
+    //static void parseBidder(Element e);
 
     /* Process one items-???.xml file.
      */
