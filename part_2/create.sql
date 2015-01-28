@@ -1,7 +1,7 @@
 --- Creates the tables for the auction site
 
 CREATE TABLE Item (
-    item_id INT UNSIGNED NOT NULL,
+    item_id INT UNSIGNED NOT NULL PRIMARY KEY,
     name VARCHAR(100),
     buy_price DECIMAL(8,2),
     start_price DECIMAL(8,2),
@@ -21,10 +21,11 @@ CREATE TABLE Bid (
     item_id INT UNSIGNED NOT NULL,
     time TIMESTAMP,
     amount DECIMAL(8,2),
+    PRIMARY KEY(user_id, item_id, time)
 ) ;
 
 CREATE TABLE AuctionUser (
-    user_id INT UNSIGNED NOT NULL,
+    user_id INT UNSIGNED NOT NULL PRIMARY KEY,
     sell_rating INT , --- change to unsigned maybe 
     buy_rating INT ,
     location VARCHAR(100),
@@ -34,5 +35,6 @@ CREATE TABLE AuctionUser (
 CREATE TABLE ItemCategory (
     item_id INT UNSIGNED NOT NULL,
     category VARCHAR(100),
+    PRIMARY KEY(item_id, category)
 ) ;
 
