@@ -5,8 +5,7 @@ Synthia Ling
 Users(User_ID, 
       Sell_Rating,
       Buy_Rating,
-      Long,
-      Lat,
+      Location,
       Country,
       PRIMARY KEY(User_ID)
      )
@@ -23,10 +22,12 @@ Items(Item_ID,
       Number_of_Bids,
       Long,
       Lat,
+      Location,
       Country,
       Started,
       Ends,
       User_ID,
+      Description
       PRIMARY KEY(Item_ID)
     )
 Categories(Item_ID,
@@ -34,9 +35,9 @@ Categories(Item_ID,
            PRIMARY KEY(Item_ID, Category)
           )
 
-2. User_ID -> Sell_Rating, Buy_Rating, Long, Lat, Country
+2. User_ID -> Sell_Rating, Buy_Rating, Location, Country
 User_ID, Item_ID, Time -> Amount
-Item_ID -> Name, Buy_Price, Start_Price, Number_of_Bids, Long, Lat, Country, Started, Ends, User_ID
+Item_ID -> Name, Buy_Price, Start_Price, Number_of_Bids, Long, Lat, Location, Country, Started, Ends, User_ID, Description
 
 3. Yes our relations are in BCNF
 
