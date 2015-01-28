@@ -312,7 +312,7 @@ class MyParser {
        String row= addCol(itemID, getElementTextByTagNameNR(e, "Name"));
         
        String buy_price = strip(getElementTextByTagNameNR(e, "Buy_Price"));
-       if(buy_price == "") {
+       if(buy_price.equals("")) {
           row=addCol(row, "NULL"); //What are we using for null? \N?
        } else{
              row=addCol(row, buy_price);
