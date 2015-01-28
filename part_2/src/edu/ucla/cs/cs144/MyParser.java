@@ -207,6 +207,7 @@ class MyParser {
     }
 
     static void closeLoadFiles() {
+        try {
         UserBW.flush();
         UserBW.close();
         BidBW.flush();
@@ -215,6 +216,11 @@ class MyParser {
         ItemBW.close();
         ItemCategoryBW.flush();
         ItemCategoryBW.flush();
+        }
+        catch (Exception e) {
+            System.out.println("Failed to close outfiles!");
+            System.exit(1);
+       }
     }
     /* Dumps rows to the User load file.  
      * User(UID, srat, brat, long, lat, country)
