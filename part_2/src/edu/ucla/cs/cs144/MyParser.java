@@ -44,7 +44,7 @@ import org.xml.sax.ErrorHandler;
 class MyParser {
     /* Hold current rows. not necessarily written to load files*/
     HashMap<Integer, String> userRows;
-    Vector<String> itemRows;
+    static ArrayList<String> itemRows = new ArrayList<String>();
     Vector<String> bidRows;
     Vector<String> itemCategoryRows;
 
@@ -197,46 +197,55 @@ class MyParser {
      * Item(IID,name,bPrice,sPrice,numBids,long,lat,country,start,end,SellerID)
      */
     //static int updateItemLF();
-    
+   
+    static String addCol(String row, String newCol) {
+      return row + columnSeparator + newCol;       
+    } 
+
     /* Parses an item node
      * Adds row(s) to itemRows,itemCategoryRows,bidRows,userRows  
      */
     static void parseItem(Element e){
 
-       String id = e.getAttribute("ItemID");
-       String name = getElementTextByTagNameNR(e, "Name"); 
-
-       String buy_price = getElementTextByTagNameNR(e, "Buy_Price");
+       String row= addCol(e.getAttribute("ItemID"), getElementTextByTagNameNR(e, "Name"));
+        
+       String buy_price = strip(getElementTextByTagNameNR(e, "Buy_Price"));
        if(buy_price == "") {
-          buy_price="null"; //What are we using for null? \N?
+          row=addCol(row, "NULL"); //What are we using for null? \N?
+       } else{
+             row=addCol(row, buy_price);
        }
- 
-       String start_price = getElementTextByTagNameNR(e, "First_Bid");
-       String number_of_bids = getElementTextByTagNameNR(e, "Number_of_Bids");
-       
-       //Latitude and Longitude are Location attributes
-       Element loc = getElementByTagNameNR(e, "Location");
-       String lat = loc.getAttribute("Latitude");
-       String lon = loc.getAttribute("Longitude");
 
-       String country = getElementTextByTagNameNR(e, "Country");       
-       String started = getElementTextByTagNameNR(e, "Started");
-       String ends = getElementTextByTagNameNR(e, "Ends");
+       row=addCol(row, strip(getElementTextByTagNameNR(e, "First_Bid")));
+       row=addCol(row, getElementTextByTagNameNR(e, "Number_of_Bids"));
+       
+       Element loc = getElementByTagNameNR(e, "Location");
+       //Latitude and Longitude are Location attributes
+       String lat = loc.getAttribute("Latitude");
+       if(lat ==null || lat=="") {
+          row=addCol(row, "NULL");
+       } else {
+          row=addCol(row, lat);
+       }
+       String lon = loc.getAttribute("Longitude");
+       if(lon == null || lon=="") {
+          row=addCol(row, "NULL");
+       } else {
+          row=addCol(row, lon);
+       }
+       row=addCol(row, getElementText(loc));
+
+       row=addCol(row, getElementTextByTagNameNR(e, "Country")); 
+       row=addCol(row, getElementTextByTagNameNR(e, "Started"));
+       row=addCol(row, getElementTextByTagNameNR(e, "Ends"));
 
        //UserID is Seller attribute
-       String user_id = getElementByTagNameNR(e, "Seller").getAttribute("UserID");
+       row=addCol(row, getElementByTagNameNR(e, "Seller").getAttribute("UserID"));
+
+       row=addCol(row, getElementTextByTagNameNR(e, "Description"));
        
-       System.out.println(id);  
-       System.out.println(name);
-       System.out.println(buy_price);
-       System.out.println(start_price);
-       System.out.println(number_of_bids);
-       System.out.println(lat);
-       System.out.println(lon);
-       System.out.println(country);
-       System.out.println(started);
-       System.out.println(ends);
-       System.out.println(user_id);   
+       itemRows.add(row);
+  
    }
 
     /* Parses a bid node 
@@ -278,7 +287,9 @@ class MyParser {
         for ( Element curItem : getElementsByTagNameNR(doc.getDocumentElement(), "Item")) {
             parseItem(curItem);
         } 
-        
+        for(String r :itemRows) {
+          System.out.println(r);
+        } 
         /**************************************************************/
         
     }
