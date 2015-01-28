@@ -1,4 +1,6 @@
---- Drops all tables previously created by creat.sql
+/*
+ * Drops all tables previously created by creat.sql
+ */
 
 DROP TABLE IF EXISTS AuctionUser ;
 DROP TABLE IF EXISTS Item ;
