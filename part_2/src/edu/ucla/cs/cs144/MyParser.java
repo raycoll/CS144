@@ -52,10 +52,10 @@ class MyParser {
     static DocumentBuilder builder;
    
     /* Names of the output load files */
-    static final String ItemLFName = "./Item.load";
-    static final String UserLFName = "./User.load";
-    static final String BidLFName = "./Bid.load";
-    static final String ItemCategoryLFName = "./ItemCategory.load";
+    static final String ItemLFName = "./Item.dat";
+    static final String UserLFName = "./User.dat";
+    static final String BidLFName = "./Bid.dat";
+    static final String ItemCategoryLFName = "./ItemCategory.dat";
    
     /* File objects for the output load files */ 
     BufferedWriter ItemLF;
