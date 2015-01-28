@@ -43,7 +43,7 @@ import org.xml.sax.ErrorHandler;
 
 class MyParser {
     /* Hold current rows. not necessarily written to load files*/
-    HashMap<Integer, ArrayList<String>> userRows;
+    static HashMap<Integer, ArrayList<String>> userRows;
     static ArrayList<String> itemRows = new ArrayList<String>();
     static ArrayList<String> bidRows = new ArrayList<String>();
     static ArrayList<String> itemCategoryRows = new ArrayList<String>();
