@@ -1,8 +1,10 @@
 #!/bin/bash
 # Parses the ebay xml data and loads it into the CS144 mysql database.  
-
+# Drop old tables
+mysql CS144 < drop.sql
 
 # Build and run parser
+ant 
 ant run
 
 # Create tables
