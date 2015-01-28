@@ -2,20 +2,20 @@ Steven Collison
 Synthia Ling
 
 1.
-Users(User_ID, 
+AuctionUser(User_ID, 
       Sell_Rating,
       Buy_Rating,
       Location,
       Country,
       PRIMARY KEY(User_ID)
      )
-Bids(User_ID, 
+Bid(User_ID, 
      Item_ID,
      Time,
      Amount,
      PRIMARY KEY(User_ID, Item_ID, Time)
     )
-Items(Item_ID,
+Item(Item_ID,
       Name,
       Buy_Price,
       Start_Price,
@@ -30,7 +30,7 @@ Items(Item_ID,
       Description
       PRIMARY KEY(Item_ID)
     )
-Categories(Item_ID,
+ItemCategory(Item_ID,
            Category,
            PRIMARY KEY(Item_ID, Category)
           )
