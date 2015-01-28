@@ -45,8 +45,8 @@ class MyParser {
     /* Hold current rows. not necessarily written to load files*/
     HashMap<Integer, ArrayList<String>> userRows;
     static ArrayList<String> itemRows = new ArrayList<String>();
-    Vector<String> bidRows;
-    Vector<String> itemCategoryRows;
+    static ArrayList<String> bidRows = new ArrayList<String>();
+    static ArrayList<String> itemCategoryRows = new ArrayList<String>();
 
     static final String columnSeparator = "|*|";
     static DocumentBuilder builder;
@@ -298,8 +298,10 @@ class MyParser {
      * Adds row(s) to itemRows,itemCategoryRows,bidRows,userRows  
      */
     static void parseItem(Element e){
+       String itemID = e.getAttribute("ItemID");
 
-       String row= addCol(e.getAttribute("ItemID"), getElementTextByTagNameNR(e, "Name"));
+       //Start row string for the item table
+       String row= addCol(itemID, getElementTextByTagNameNR(e, "Name"));
         
        String buy_price = strip(getElementTextByTagNameNR(e, "Buy_Price"));
        if(buy_price == "") {
@@ -314,13 +316,13 @@ class MyParser {
        Element loc = getElementByTagNameNR(e, "Location");
        //Latitude and Longitude are Location attributes
        String lat = loc.getAttribute("Latitude");
-       if(lat ==null || lat=="") {
+       if(lat.equals(null) || lat.equals("")) {
           row=addCol(row, "NULL");
        } else {
           row=addCol(row, lat);
        }
        String lon = loc.getAttribute("Longitude");
-       if(lon == null || lon=="") {
+       if(lon.equals(null) || lon.equals("")) {
           row=addCol(row, "NULL");
        } else {
           row=addCol(row, lon);
@@ -335,9 +337,25 @@ class MyParser {
        row=addCol(row, getElementByTagNameNR(e, "Seller").getAttribute("UserID"));
 
        row=addCol(row, getElementTextByTagNameNR(e, "Description"));
-       
+
        itemRows.add(row);
-  
+
+       //Add each category of this item into the Category table 
+       for ( Element curCat : getElementsByTagNameNR(e, "Category")) {
+           itemCategoryRows.add(addCol(itemID, getElementText(curCat)));
+       }
+       
+       Element[] bids = getElementsByTagNameNR(getElementByTagNameNR(e, "Bids"), "Bid");
+       if(bids.length != 0) {
+          for(Element curBid : bids) {
+             Element bidder=getElementByTagNameNR(curBid, "Bidder");
+             String bidRow = addCol(bidder.getAttribute("UserID"), itemID);
+             bidRow = addCol(bidRow, getElementTextByTagNameNR(curBid, "Time"));
+             bidRows.add(addCol(bidRow, strip(getElementTextByTagNameNR(curBid, "Amount"))));
+          }
+       }
+
+ 
    }
 
     /* Parses a bid node 
@@ -379,9 +397,16 @@ class MyParser {
         for ( Element curItem : getElementsByTagNameNR(doc.getDocumentElement(), "Item")) {
             parseItem(curItem);
         } 
-        for(String r :itemRows) {
+        /*for(String r :itemRows) {
           System.out.println(r);
         } 
+        for(String b :bidRows) {
+          System.out.println(b);
+        }
+        */
+        for(String c : itemCategoryRows) {
+          System.out.println(c);
+        }
         /**************************************************************/
         
     }
