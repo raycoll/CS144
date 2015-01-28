@@ -43,7 +43,7 @@ import org.xml.sax.ErrorHandler;
 
 class MyParser {
     /* Hold current rows. not necessarily written to load files*/
-    HashMap<Integer, String> userRows;
+    HashMap<Integer, ArrayList<String>> userRows;
     static ArrayList<String> itemRows = new ArrayList<String>();
     Vector<String> bidRows;
     Vector<String> itemCategoryRows;
@@ -53,15 +53,15 @@ class MyParser {
    
     /* Names of the output load files */
     static final String ItemLFName = "./Item.dat";
-    static final String UserLFName = "./User.dat";
+    static final String UserLFName = "./AuctionUser.dat";
     static final String BidLFName = "./Bid.dat";
     static final String ItemCategoryLFName = "./ItemCategory.dat";
    
     /* File objects for the output load files */ 
-    BufferedWriter ItemLF;
-    BufferedWriter UserLF;
-    BufferedWriter BidLF;
-    BufferedWriter ItemCategoryLF;
+    static BufferedWriter ItemBW;
+    static BufferedWriter UserBW;
+    static BufferedWriter BidBW;
+    static BufferedWriter ItemCategoryBW;
      
     static final String[] typeName = {
     "none",
@@ -176,27 +176,119 @@ class MyParser {
     }
 
     /* Opens the output mysql load files for the 4 tables */
-    //static void initLoadFiles(); 
+    static void initLoadFiles() {
+         try {
+         File UserLF = new File(UserLFName);
+         File BidLF = new File(BidLFName);
+         File ItemLF = new File(ItemLFName);
+         File ItemCategoryLF = new File(ItemCategoryLFName);
+           if (!UserLF.exists()) {
+               UserLF.createNewFile();
+           }
+           if (!BidLF.exists()) {
+               BidLF.createNewFile();
+           }
+           if (!ItemLF.exists()) {
+               ItemLF.createNewFile();
+           }
+           if (!ItemCategoryLF.exists()) {
+               ItemCategoryLF.createNewFile();
+           }
 
+         UserBW = new BufferedWriter(new FileWriter(UserLF));
+          BidBW = new BufferedWriter(new FileWriter(BidLF));
+          ItemBW = new BufferedWriter(new FileWriter(ItemLF));
+          ItemCategoryBW = new BufferedWriter(new FileWriter(ItemCategoryLF));
+         } 
+         catch (Exception e) {
+            System.out.println("Failed to create outfiles!");
+            System.exit(1);
+         }
+    }
+
+    static void closeLoadFiles() {
+        UserBW.flush();
+        UserBW.close();
+        BidBW.flush();
+        BidBW.close();
+        ItemBW.flush();
+        ItemBW.close();
+        ItemCategoryBW.flush();
+        ItemCategoryBW.flush();
+    }
     /* Dumps rows to the User load file.  
      * User(UID, srat, brat, long, lat, country)
      */
-    //static int updateUserLF();
+    static void updateUserLF() {
+       for (ArrayList<String> value : userRows.values()) {
+           for (String s : value) {
+               try {
+                   UserBW.write(s,0,s.length());
+               }
+               catch (Exception e) {
+                   System.out.println("Failed to write to AuctionUser outfile!");
+                   System.exit(1);
+               }    
+           }
+           try { 
+               UserBW.write('\n');
+           }
+           catch (Exception e) {
+               System.out.println("Failed to write newline to user outfile!");
+               System.exit(1);
+           }
+       }
+    }
     
     /* Dumps row to the ItemCategory load file
      * ItemCategory(IID, Category)
      */
-    //static int updateItemCategoryLF();
+    static void updateItemCategoryLF() {
+        for (String row : itemCategoryRows) {
+               try {
+                   UserBW.write(row,0,row.length());
+                   UserBW.write('\n');
+               }
+               catch (Exception e) {
+                   System.out.println("Failed to write to AuctionUser outfile!");
+                   System.exit(1);
+               }    
+           }
+       }  
    
     /* Dumps rows to the Bids load file
      * Bids(UID,IID,time, amt)
      */ 
-    //static int updateBidLF();
+    static void updateBidLF() {
+        for (String row : bidRows) {
+               try {
+                   UserBW.write(row,0,row.length());
+                   UserBW.write('\n');
+               }
+               catch (Exception e) {
+                   System.out.println("Failed to write to Bid outfile!");
+                   System.exit(1);
+               }    
+        }
+    }  
+     
     
     /* Dumps rows to Item load file
      * Item(IID,name,bPrice,sPrice,numBids,long,lat,country,start,end,SellerID)
      */
-    //static int updateItemLF();
+    static void updateItemLF() {
+        for (String row : itemRows) {
+               try {
+                   UserBW.write(row,0,row.length());
+                   UserBW.write('\n');
+               }
+               catch (Exception e) {
+                   System.out.println("Failed to write to Item outfile!");
+                   System.exit(1);
+               }    
+       }
+    }  
+   
    
     static String addCol(String row, String newCol) {
       return row + columnSeparator + newCol;       
