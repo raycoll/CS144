@@ -295,7 +295,9 @@ class MyParser {
        }
     }  
    
-   
+    /* Returns previous row appended with a new column
+    *  Separated by columnSeperator
+    */
     static String addCol(String row, String newCol) {
       return row + columnSeparator + newCol;       
     } 
@@ -346,11 +348,12 @@ class MyParser {
 
        itemRows.add(row);
 
-       //Add each category of this item into the Category table 
+       //Add each category into the Category table 
        for ( Element curCat : getElementsByTagNameNR(e, "Category")) {
            itemCategoryRows.add(addCol(itemID, getElementText(curCat)));
        }
        
+       //Add each bid into Bid table
        Element[] bids = getElementsByTagNameNR(getElementByTagNameNR(e, "Bids"), "Bid");
        if(bids.length != 0) {
           for(Element curBid : bids) {
