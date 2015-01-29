@@ -43,7 +43,7 @@ import org.xml.sax.ErrorHandler;
 
 class MyParser {
     /* Hold current rows. not necessarily written to load files*/
-    static HashMap<Integer, ArrayList<String>> userRows;
+    static HashMap<String, ArrayList<String>> userRows = new HashMap<String, ArrayList<String>>();
     static ArrayList<String> itemRows = new ArrayList<String>();
     static ArrayList<String> bidRows = new ArrayList<String>();
     static ArrayList<String> itemCategoryRows = new ArrayList<String>();
@@ -342,7 +342,9 @@ class MyParser {
        row=addCol(row, getElementTextByTagNameNR(e, "Ends"));
 
        //UserID is Seller attribute
-       row=addCol(row, getElementByTagNameNR(e, "Seller").getAttribute("UserID"));
+       Element seller = getElementByTagNameNR(e, "Seller");
+       String sellerID = seller.getAttribute("UserID");
+       row=addCol(row, sellerID);
 
        row=addCol(row, getElementTextByTagNameNR(e, "Description"));
 
@@ -352,17 +354,70 @@ class MyParser {
        for ( Element curCat : getElementsByTagNameNR(e, "Category")) {
            itemCategoryRows.add(addCol(itemID, getElementText(curCat)));
        }
-       
-       //Add each bid into Bid table
-       Element[] bids = getElementsByTagNameNR(getElementByTagNameNR(e, "Bids"), "Bid");
+
+      //Check seller's userID. If does not exist, add a new row.
+      //If it is already in the HashMap, then add seller rating if it's not in there already
+      
+      if(userRows.get(sellerID) != null) {
+          ArrayList<String> updateUser = userRows.get(sellerID);
+          //Check if seller rating needs to be added
+          if(updateUser.get(1).equals("NULL")){ 
+            updateUser.set(1, seller.getAttribute("Rating"));
+            userRows.put(sellerID, updateUser);
+          }
+          
+      } else {
+        ArrayList<String> userRow = new ArrayList<String>(5);
+        userRow.add(sellerID);
+        userRow.add(seller.getAttribute("Rating")); //Sell_Rating
+        userRow.add("NULL"); //Buy_Rating
+        userRow.add("NULL"); //Location
+        userRow.add("NULL"); //Country
+        userRows.put(sellerID, userRow);    
+      }
+
+      Element[] bids = getElementsByTagNameNR(getElementByTagNameNR(e, "Bids"), "Bid");
        if(bids.length != 0) {
           for(Element curBid : bids) {
+
+            //BID TABLE
+            //Add User_ID, Item_ID, Time, Amount for each Bid element into bidRows
              Element bidder=getElementByTagNameNR(curBid, "Bidder");
              String bidRow = addCol(bidder.getAttribute("UserID"), itemID);
              bidRow = addCol(bidRow, getElementTextByTagNameNR(curBid, "Time"));
              bidRows.add(addCol(bidRow, strip(getElementTextByTagNameNR(curBid, "Amount"))));
+             
+
+
+             //AUCTIONUSER TABLE
+             //Check if new user needs to be added or existing user needs to have bidder information added
+             String bidderID = bidder.getAttribute("UserID");
+
+             if(userRows.get(bidderID) != null) { //UserID has already been seen
+
+                ArrayList<String> updateByr = userRows.get(bidderID);
+
+                //If buyer rating is "NULL", that means buyer info hasn't been added
+                if(updateByr.get(2).equals("NULL")){ 
+                  updateByr.set(2, bidder.getAttribute("Rating"));
+                  updateByr.set(3, getElementTextByTagNameNR(bidder, "Location"));
+                  updateByr.set(4, getElementTextByTagNameNR(bidder, "Country"));
+                  userRows.put(bidderID, updateByr);
+                }
+             } else { //New UserID, create a new "row" for this user (<key, value> mapping)
+                ArrayList<String> userRow = new ArrayList<String>(5);
+                userRow.add(bidderID);
+                userRow.add("NULL"); //Sell_Rating
+                userRow.add(bidder.getAttribute("Rating")); //Buy_Rating
+                userRow.add(getElementTextByTagNameNR(bidder, "Location")); //Location
+                userRow.add(getElementTextByTagNameNR(bidder, "Country")); //Country
+                userRows.put(bidderID, userRow);   
+             }
+             
           }
-       }
+      }
+
+
 
  
    }
