@@ -478,6 +478,17 @@ class MyParser {
         for(String c : itemCategoryRows) {
           System.out.println(c);
         }
+
+        /* Flush rows to output files */
+        updateItemLF();
+        updateItemCategoryLF();
+        updateBidLF(); 
+
+        /* Clear the in-memory data since we flushed to file */
+        itemRows.clear();
+        bidRows.clear();
+        itemCategoryRows.clear();
+
         /**************************************************************/
         
     }
@@ -488,6 +499,9 @@ class MyParser {
             System.exit(1);
         }
         
+        /* Initialize output files */
+        initLoadFiles(); 
+
         /* Initialize parser. */
         try {
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -510,5 +524,11 @@ class MyParser {
             File currentFile = new File(args[i]);
             processFile(currentFile);
         }
+
+        /* Flush user rows to output file */
+        updateUserLF();
+        
+        /* Close all output files(must do this since we used BufferedWriter) */
+        closeLoadFiles();  
     }
 }
