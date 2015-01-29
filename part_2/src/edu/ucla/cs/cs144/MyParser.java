@@ -306,8 +306,10 @@ class MyParser {
      * Adds row(s) to itemRows,itemCategoryRows,bidRows,userRows  
      */
     static void parseItem(Element e){
+
        String itemID = e.getAttribute("ItemID");
 
+       //ITEMS ARRAYLIST
        //Start row string for the item table
        String row= addCol(itemID, getElementTextByTagNameNR(e, "Name"));
         
@@ -322,6 +324,7 @@ class MyParser {
        row=addCol(row, getElementTextByTagNameNR(e, "Number_of_Bids"));
        
        Element loc = getElementByTagNameNR(e, "Location");
+       
        //Latitude and Longitude are Location attributes
        String lat = loc.getAttribute("Latitude");
        if(lat.equals(null) || lat.equals("")) {
@@ -350,14 +353,17 @@ class MyParser {
 
        itemRows.add(row);
 
-       //Add each category into the Category table 
+
+       //CATEGORY ARRAYLIST
+       //Add each category paired with the current itemID
        for ( Element curCat : getElementsByTagNameNR(e, "Category")) {
            itemCategoryRows.add(addCol(itemID, getElementText(curCat)));
        }
 
+
+      //AUCTIONUSER HASHMAP
       //Check seller's userID. If does not exist, add a new row.
       //If it is already in the HashMap, then add seller rating if it's not in there already
-      
       if(userRows.get(sellerID) != null) {
           ArrayList<String> updateUser = userRows.get(sellerID);
           //Check if seller rating needs to be added
@@ -376,23 +382,24 @@ class MyParser {
         userRows.put(sellerID, userRow);    
       }
 
-      Element[] bids = getElementsByTagNameNR(getElementByTagNameNR(e, "Bids"), "Bid");
+
+       Element[] bids = getElementsByTagNameNR(getElementByTagNameNR(e, "Bids"), "Bid");
        if(bids.length != 0) {
           for(Element curBid : bids) {
 
-            //BID TABLE
+            //BID ARRAYLIST
             //Add User_ID, Item_ID, Time, Amount for each Bid element into bidRows
              Element bidder=getElementByTagNameNR(curBid, "Bidder");
-             String bidRow = addCol(bidder.getAttribute("UserID"), itemID);
+             String bidderID = bidder.getAttribute("UserID");
+
+             String bidRow = addCol(bidderID, itemID);
              bidRow = addCol(bidRow, getElementTextByTagNameNR(curBid, "Time"));
              bidRows.add(addCol(bidRow, strip(getElementTextByTagNameNR(curBid, "Amount"))));
              
 
 
-             //AUCTIONUSER TABLE
+             //AUCTIONUSER HASHMAP
              //Check if new user needs to be added or existing user needs to have bidder information added
-             String bidderID = bidder.getAttribute("UserID");
-
              if(userRows.get(bidderID) != null) { //UserID has already been seen
 
                 ArrayList<String> updateByr = userRows.get(bidderID);
