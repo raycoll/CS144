@@ -252,8 +252,8 @@ class MyParser {
     static void updateItemCategoryLF() {
         for (String row : itemCategoryRows) {
                try {
-                   UserBW.write(row,0,row.length());
-                   UserBW.write('\n');
+                   ItemCategoryBW.write(row,0,row.length());
+                   ItemCategoryBW.write('\n');
                }
                catch (Exception e) {
                    System.out.println("Failed to write to AuctionUser outfile!");
@@ -268,8 +268,8 @@ class MyParser {
     static void updateBidLF() {
         for (String row : bidRows) {
                try {
-                   UserBW.write(row,0,row.length());
-                   UserBW.write('\n');
+                   BidBW.write(row,0,row.length());
+                   BidBW.write('\n');
                }
                catch (Exception e) {
                    System.out.println("Failed to write to Bid outfile!");
@@ -285,8 +285,8 @@ class MyParser {
     static void updateItemLF() {
         for (String row : itemRows) {
                try {
-                   UserBW.write(row,0,row.length());
-                   UserBW.write('\n');
+                   ItemBW.write(row,0,row.length());
+                   ItemBW.write('\n');
                }
                catch (Exception e) {
                    System.out.println("Failed to write to Item outfile!");
