@@ -19,7 +19,7 @@ CREATE TABLE Item (
 ) ;
 
 CREATE TABLE Bid (
-    user_id INT UNSIGNED NOT NULL,
+    user_id VARCHAR(100) NOT NULL,
     item_id INT UNSIGNED NOT NULL,
     time TIMESTAMP,
     amount DECIMAL(8,2),
@@ -27,7 +27,7 @@ CREATE TABLE Bid (
 ) ;
 
 CREATE TABLE AuctionUser (
-    user_id INT UNSIGNED NOT NULL PRIMARY KEY,
+    user_id VARCHAR(100) NOT NULL PRIMARY KEY,
     sell_rating INT ,
     buy_rating INT ,
     location VARCHAR(100),
