@@ -36,7 +36,7 @@ ItemCategory(Item_ID,
           )
 
 2. User_ID -> Sell_Rating, Buy_Rating, Location, Country
-User_ID, Item_ID, Time -> Amount
+User_ID, Time -> Item_ID, Amount
 Item_ID -> Name, Buy_Price, Start_Price, Number_of_Bids, Lat, Long, Location, Country, Started, Ends, User_ID, Description
 
 3. Yes our relations are in BCNF

@@ -1,3 +1,4 @@
+/*SET profiling = 1;*/
 /* A collection of queries to test the parsed xml data */
 
 /*
@@ -32,8 +33,7 @@ HAVING COUNT(*) = 4
  * so you can use this time point to decide which auction(s) are current. 
  * Pay special attention to the current auctions without any bid.
 */
-
-
+/*
 SELECT b.item_id
 FROM (SELECT item_id
 FROM Item
@@ -42,6 +42,14 @@ INNER JOIN Bid b
 ON (current_items.item_id=b.item_id)
 ORDER BY b.amount DESC
 LIMIT 1;
+*/
+SELECT item_id
+FROM (SELECT b.item_id, MAX(amount)                                                                                                           
+	  FROM (SELECT item_id                                                                                                                        
+			FROM Item                                                                                                                                   
+			WHERE Ends > '2001-12-20 00:00:01') as current_items                                                                                        
+			INNER JOIN Bid b                                                                                                                            
+			ON (current_items.item_id=b.item_id)) as newtable;
 
 /*
  * Find the number of sellers whose rating is higher than 1000.
@@ -64,4 +72,6 @@ WHERE sell_rating IS NOT NULL AND buy_rating IS NOT NULL;
 
 SELECT COUNT(DISTINCT(ic.category))
 FROM (SELECT item_id FROM Bid WHERE amount > 100) as bi,  ItemCategory ic
-WHERE ic.item_id=bi.item_id
+WHERE ic.item_id=bi.item_id;
+
+/*SHOW PROFILES;*/
