@@ -229,7 +229,8 @@ class MyParser {
        for (ArrayList<String> value : userRows.values()) {
            for (String s : value) {
                try {
-                   UserBW.write(s,0,s.length());
+                   String temp = s + columnSeparator;  
+                   UserBW.write(temp,0,temp.length());
                }
                catch (Exception e) {
                    System.out.println("Failed to write to AuctionUser outfile!");
