@@ -493,10 +493,10 @@ class MyParser {
             parseItem(curItem);
         } 
         //Printing tables for testing
-        
+        /*
         for(String r :itemRows) {
           System.out.println(r);
-        } /*
+        } 
         for(String b :bidRows) {
           System.out.println(b);
         }
