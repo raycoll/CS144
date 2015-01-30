@@ -3,7 +3,7 @@
  */
 
 CREATE TABLE Item (
-    itemid INT UNSIGNED NOT NULL PRIMARY KEY,
+    item_id INT UNSIGNED NOT NULL PRIMARY KEY,
     name VARCHAR(100),
     buyprice DECIMAL(8,2),
     start_price DECIMAL(8,2),
@@ -16,7 +16,7 @@ CREATE TABLE Item (
     ends TIMESTAMP,
     seller_id INT UNSIGNED NOT NULL,
     description VARCHAR(4000)
-) ;
+) COLLATE utf8_bin;
 
 CREATE TABLE Bid (
     user_id VARCHAR(100) NOT NULL,
@@ -24,7 +24,7 @@ CREATE TABLE Bid (
     time TIMESTAMP,
     amount DECIMAL(8,2),
     PRIMARY KEY(user_id, item_id, time)
-) ;
+) COLLATE utf8_bin;
 
 CREATE TABLE AuctionUser (
     user_id VARCHAR(100) NOT NULL PRIMARY KEY,
@@ -32,11 +32,11 @@ CREATE TABLE AuctionUser (
     buy_rating INT ,
     location VARCHAR(100),
     country VARCHAR(100)
-) ;
+) COLLATE utf8_bin;
 
 CREATE TABLE ItemCategory (
     item_id INT UNSIGNED NOT NULL,
     category VARCHAR(100),
     PRIMARY KEY(item_id, category)
-) ;
+) COLLATE utf8_bin;
 
