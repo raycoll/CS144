@@ -223,7 +223,7 @@ class MyParser {
        }
     }
     /* Dumps rows to the User load file.  
-     * User(UID, srat, brat, long, lat, country)
+     * User(UID, srat, brat, location, country)
      */
     static void updateUserLF() {
        for (ArrayList<String> value : userRows.values()) {
@@ -361,23 +361,23 @@ class MyParser {
        }
 
 
-      //AUCTIONUSER HASHMAP
-      //Check seller's userID. If does not exist, add a new row.
-      //If it is already in the HashMap, then add seller rating if it's not in there already
-      if(userRows.get(sellerID) != null) {
+      //AUCTIONUSER HASHMAP: seller
+      //Check if new user needs to be added or existing user needs to have seller information added
+      if(userRows.get(sellerID) != null) { //UserID has already been seen
           ArrayList<String> updateUser = userRows.get(sellerID);
-          //Check if seller rating needs to be added
-          if(updateUser.get(1).equals("NULL")){ 
-            updateUser.set(1, seller.getAttribute("Rating"));
+
+          //If seller rating is "NULL", that means seller info hasn't been added
+          if(updateUser.get(1).equals("NULL"+columnSeparator)){ 
+            updateUser.set(1, seller.getAttribute("Rating")+columnSeparator);
             userRows.put(sellerID, updateUser);
           }
           
-      } else {
+      } else { //New UserID, create a new "row" for this user (<key, value> mapping)
         ArrayList<String> userRow = new ArrayList<String>(5);
-        userRow.add(sellerID);
-        userRow.add(seller.getAttribute("Rating")); //Sell_Rating
-        userRow.add("NULL"); //Buy_Rating
-        userRow.add("NULL"); //Location
+        userRow.add(sellerID+columnSeparator);
+        userRow.add(seller.getAttribute("Rating")+columnSeparator); //Sell_Rating
+        userRow.add("NULL"+columnSeparator); //Buy_Rating
+        userRow.add("NULL"+columnSeparator); //Location
         userRow.add("NULL"); //Country
         userRows.put(sellerID, userRow);    
       }
@@ -398,35 +398,31 @@ class MyParser {
              
 
 
-             //AUCTIONUSER HASHMAP
+             //AUCTIONUSER HASHMAP: bidder
              //Check if new user needs to be added or existing user needs to have bidder information added
              if(userRows.get(bidderID) != null) { //UserID has already been seen
 
                 ArrayList<String> updateByr = userRows.get(bidderID);
 
                 //If buyer rating is "NULL", that means buyer info hasn't been added
-                if(updateByr.get(2).equals("NULL")){ 
-                  updateByr.set(2, bidder.getAttribute("Rating"));
-                  updateByr.set(3, getElementTextByTagNameNR(bidder, "Location"));
+                if(updateByr.get(2).equals("NULL"+columnSeparator)){ 
+                  updateByr.set(2, bidder.getAttribute("Rating")+columnSeparator);
+                  updateByr.set(3, getElementTextByTagNameNR(bidder, "Location")+columnSeparator);
                   updateByr.set(4, getElementTextByTagNameNR(bidder, "Country"));
                   userRows.put(bidderID, updateByr);
                 }
              } else { //New UserID, create a new "row" for this user (<key, value> mapping)
                 ArrayList<String> userRow = new ArrayList<String>(5);
-                userRow.add(bidderID);
-                userRow.add("NULL"); //Sell_Rating
-                userRow.add(bidder.getAttribute("Rating")); //Buy_Rating
-                userRow.add(getElementTextByTagNameNR(bidder, "Location")); //Location
+                userRow.add(bidderID+columnSeparator);
+                userRow.add("NULL"+columnSeparator); //Sell_Rating
+                userRow.add(bidder.getAttribute("Rating")+columnSeparator); //Buy_Rating
+                userRow.add(getElementTextByTagNameNR(bidder, "Location")+columnSeparator); //Location
                 userRow.add(getElementTextByTagNameNR(bidder, "Country")); //Country
                 userRows.put(bidderID, userRow);   
              }
              
           }
       }
-
-
-
- 
    }
 
     /* Parses a bid node 
@@ -468,15 +464,23 @@ class MyParser {
         for ( Element curItem : getElementsByTagNameNR(doc.getDocumentElement(), "Item")) {
             parseItem(curItem);
         } 
-        /*for(String r :itemRows) {
+
+        /*
+        for(String r :itemRows) {
           System.out.println(r);
-        } 
+        }
         for(String b :bidRows) {
           System.out.println(b);
         }
-        */
+        
         for(String c : itemCategoryRows) {
           System.out.println(c);
+        } */
+        for(ArrayList<String> curList : userRows.values()) {
+           for(String curString : curList) {
+              System.out.print(curString);
+           }
+           System.out.println(" ");
         }
 
         /* Flush rows to output files */
