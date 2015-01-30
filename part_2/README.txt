@@ -13,7 +13,7 @@ Bid(User_ID,
      Item_ID,
      Time,
      Amount,
-     PRIMARY KEY(User_ID, Item_ID, Time)
+     PRIMARY KEY(User_ID, Time)
     )
 Item(Item_ID,
       Name,
