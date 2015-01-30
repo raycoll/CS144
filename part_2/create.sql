@@ -21,7 +21,7 @@ CREATE TABLE Item (
 CREATE TABLE Bid (
     user_id VARCHAR(100) NOT NULL,
     item_id INT UNSIGNED NOT NULL,
-    time TIMESTAMP,
+    time TIMESTAMP NOT NULL,
     amount DECIMAL(8,2),
     PRIMARY KEY(user_id, item_id, time)
 ) COLLATE utf8_bin;

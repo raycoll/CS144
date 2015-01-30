@@ -34,14 +34,14 @@ HAVING COUNT(*) = 4
 */
 
 
-SELECT bi.Item_ID
-FROM Bid bi
-WHERE  bi.Amount = (SELECT MAX(b.Amount)
-FROM Item, Bid b
-WHERE Ends > '2001-12-20 00:00:01');
-
-
-
+SELECT b.item_id
+FROM (SELECT item_id
+FROM Item
+WHERE Ends > '2001-12-20 00:00:01') as current_items
+INNER JOIN Bid b
+ON (current_items.item_id=b.item_id)
+ORDER BY b.amount DESC
+LIMIT 1;
 
 /*
  * Find the number of sellers whose rating is higher than 1000.
