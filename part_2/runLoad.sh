@@ -14,4 +14,4 @@ mysql CS144 < create.sql
 mysql CS144 < load.sql
 
 # Done, delete tmp files
-rm #tmpfilespathhere
+rm *.dat
