@@ -40,7 +40,6 @@ import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 import org.xml.sax.ErrorHandler;
 
-
 class MyParser {
     /* Hold current rows. not necessarily written to load files*/
     static HashMap<String, ArrayList<String>> userRows = new HashMap<String, ArrayList<String>>();
@@ -302,10 +301,17 @@ class MyParser {
       return row + columnSeparator + newCol;       
     } 
 
+    static String escChar(String s){
+       //s= s.replace("\\", "\\\\");
+       return s.replace("\"", "\\\"").replace("\'", "\\\'").replace("%","\\%") //PERCENT DOESN'T WORK :(
+         .replace("%","\\%").replace("_","\\_");
+    }
+
     /* Parses an item node
      * Adds row(s) to itemRows,itemCategoryRows,bidRows,userRows  
      */
     static void parseItem(Element e){
+
 
        String itemID = e.getAttribute("ItemID");
 
@@ -315,7 +321,7 @@ class MyParser {
         
        String buy_price = strip(getElementTextByTagNameNR(e, "Buy_Price"));
        if(buy_price.equals("")) {
-          row=addCol(row, "NULL"); //What are we using for null? \N?
+          row=addCol(row, "\\N"); //What are we using for null? \N?
        } else{
              row=addCol(row, buy_price);
        }
@@ -328,13 +334,13 @@ class MyParser {
        //Latitude and Longitude are Location attributes
        String lat = loc.getAttribute("Latitude");
        if(lat.equals(null) || lat.equals("")) {
-          row=addCol(row, "NULL");
+          row=addCol(row, "\\N");
        } else {
           row=addCol(row, lat);
        }
        String lon = loc.getAttribute("Longitude");
        if(lon.equals(null) || lon.equals("")) {
-          row=addCol(row, "NULL");
+          row=addCol(row, "\\N");
        } else {
           row=addCol(row, lon);
        }
@@ -367,7 +373,7 @@ class MyParser {
        }
        row=addCol(row, desc);
 
-       itemRows.add(row);
+       itemRows.add(escChar(row));
 
 
        //CATEGORY ARRAYLIST
@@ -382,8 +388,8 @@ class MyParser {
       if(userRows.get(sellerID) != null) { //UserID has already been seen
           ArrayList<String> updateUser = userRows.get(sellerID);
 
-          //If seller rating is "NULL", that means seller info hasn't been added
-          if(updateUser.get(1).equals("NULL"+columnSeparator)){ 
+          //If seller rating is "\N", that means seller info hasn't been added
+          if(updateUser.get(1).equals("\\N"+columnSeparator)){ 
             updateUser.set(1, seller.getAttribute("Rating")+columnSeparator);
             userRows.put(sellerID, updateUser);
           }
@@ -392,9 +398,9 @@ class MyParser {
         ArrayList<String> userRow = new ArrayList<String>(5);
         userRow.add(sellerID+columnSeparator);
         userRow.add(seller.getAttribute("Rating")+columnSeparator); //Sell_Rating
-        userRow.add("NULL"+columnSeparator); //Buy_Rating
-        userRow.add("NULL"+columnSeparator); //Location
-        userRow.add("NULL"); //Country
+        userRow.add("\\N"+columnSeparator); //Buy_Rating
+        userRow.add("\\N"+columnSeparator); //Location
+        userRow.add("\\N"); //Country
         userRows.put(sellerID, userRow);    
       }
 
@@ -426,8 +432,8 @@ class MyParser {
 
                 ArrayList<String> updateByr = userRows.get(bidderID);
 
-                //If buyer rating is "NULL", that means buyer info hasn't been added
-                if(updateByr.get(2).equals("NULL"+columnSeparator)){ 
+                //If buyer rating is "\N", that means buyer info hasn't been added
+                if(updateByr.get(2).equals("\\N"+columnSeparator)){ 
                   updateByr.set(2, bidder.getAttribute("Rating")+columnSeparator); //Buy_Rating
                   updateByr.set(3, getElementTextByTagNameNR(bidder, "Location")+columnSeparator); //Location
                   updateByr.set(4, getElementTextByTagNameNR(bidder, "Country")); //Country
@@ -436,7 +442,7 @@ class MyParser {
              } else { //New UserID, create a new "row" for this user (<key, value> mapping)
                 ArrayList<String> userRow = new ArrayList<String>(5);
                 userRow.add(bidderID+columnSeparator);
-                userRow.add("NULL"+columnSeparator); //Sell_Rating
+                userRow.add("\\N"+columnSeparator); //Sell_Rating
                 userRow.add(bidder.getAttribute("Rating")+columnSeparator); //Buy_Rating
                 userRow.add(getElementTextByTagNameNR(bidder, "Location")+columnSeparator); //Location
                 userRow.add(getElementTextByTagNameNR(bidder, "Country")); //Country
@@ -487,10 +493,10 @@ class MyParser {
             parseItem(curItem);
         } 
         //Printing tables for testing
-        /*
+        
         for(String r :itemRows) {
           System.out.println(r);
-        }
+        } /*
         for(String b :bidRows) {
           System.out.println(b);
         }
