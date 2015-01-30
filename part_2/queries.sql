@@ -32,15 +32,15 @@ HAVING COUNT(*) = 4
  * so you can use this time point to decide which auction(s) are current. 
  * Pay special attention to the current auctions without any bid.
 */
- 
 
-/* SELECT i.item_id 
-FROM Item i
-WHERE i.ends > '2001-12-20 00:00:01' AND EXISTS (
-SELECT b.item_id
-FROM Bid b
-WHERE i.item_id=b.item_id AND b.amount >= i.buy_price) ;
-*/
+
+SELECT bi.Item_ID
+FROM Bid bi
+WHERE  bi.Amount = (SELECT MAX(b.Amount)
+FROM Item, Bid b
+WHERE Ends > '2001-12-20 00:00:01');
+
+
 
 
 /*
@@ -62,3 +62,6 @@ WHERE sell_rating IS NOT NULL AND buy_rating IS NOT NULL;
  * Find the number of categories that include at least one item with a bid of more than $100.
  */
 
+SELECT COUNT(DISTINCT(ic.category))
+FROM (SELECT item_id FROM Bid WHERE amount > 100) as bi,  ItemCategory ic
+WHERE ic.item_id=bi.item_id
