@@ -350,7 +350,7 @@ class MyParser {
        row=addCol(row, sellerID);
 
        String desc = getElementTextByTagNameNR(e, "Description");
-       if(desc.length > 4000) {
+       if(desc.length() > 4000) {
           desc = desc.substring(0, 4000);
        }
        row=addCol(row, desc);
