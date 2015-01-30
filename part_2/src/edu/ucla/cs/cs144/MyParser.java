@@ -341,8 +341,20 @@ class MyParser {
        row=addCol(row, getElementText(loc));
 
        row=addCol(row, getElementTextByTagNameNR(e, "Country")); 
-       row=addCol(row, getElementTextByTagNameNR(e, "Started"));
-       row=addCol(row, getElementTextByTagNameNR(e, "Ends"));
+
+       SimpleDateFormat format = new SimpleDateFormat("MMM-dd-yy HH:mm:ss");
+       SimpleDateFormat newFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+       try {
+        Date started = format.parse(getElementTextByTagNameNR(e, "Started"));
+        Date ends = format.parse(getElementTextByTagNameNR(e, "Ends"));
+
+        row=addCol(row, newFormat.format(started));
+        row=addCol(row, newFormat.format(ends));
+       } catch(ParseException pe) {
+            System.out.println("ERROR: Cannot parse date");
+        }
+
 
        //UserID is Seller attribute
        Element seller = getElementByTagNameNR(e, "Seller");
@@ -397,7 +409,13 @@ class MyParser {
              String bidderID = bidder.getAttribute("UserID");
 
              String bidRow = addCol(bidderID, itemID);
-             bidRow = addCol(bidRow, getElementTextByTagNameNR(curBid, "Time"));
+             try {
+               Date time = format.parse(getElementTextByTagNameNR(curBid, "Time"));
+              
+               bidRow=addCol(bidRow, newFormat.format(time));
+             } catch(ParseException pe) {
+               System.out.println("ERROR: Cannot parse date");
+             }
              bidRows.add(addCol(bidRow, strip(getElementTextByTagNameNR(curBid, "Amount"))));
              
 
