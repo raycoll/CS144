@@ -5,7 +5,7 @@ mysql CS144 < drop.sql
 
 # Build and run parser
 ant 
-ant run
+ant run-all
 
 # Create tables
 mysql CS144 < create.sql
