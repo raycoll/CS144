@@ -349,7 +349,11 @@ class MyParser {
        String sellerID = seller.getAttribute("UserID");
        row=addCol(row, sellerID);
 
-       row=addCol(row, getElementTextByTagNameNR(e, "Description"));
+       String desc = getElementTextByTagNameNR(e, "Description");
+       if(desc.length > 4000) {
+          desc = desc.substring(0, 4000);
+       }
+       row=addCol(row, desc);
 
        itemRows.add(row);
 
@@ -464,7 +468,7 @@ class MyParser {
         for ( Element curItem : getElementsByTagNameNR(doc.getDocumentElement(), "Item")) {
             parseItem(curItem);
         } 
-
+        //Printing tables for testing
         /*
         for(String r :itemRows) {
           System.out.println(r);
@@ -475,14 +479,14 @@ class MyParser {
         
         for(String c : itemCategoryRows) {
           System.out.println(c);
-        } */
+        } 
         for(ArrayList<String> curList : userRows.values()) {
            for(String curString : curList) {
               System.out.print(curString);
            }
            System.out.println(" ");
         }
-
+*/
         /* Flush rows to output files */
         updateItemLF();
         updateItemCategoryLF();
