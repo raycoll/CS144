@@ -410,9 +410,9 @@ class MyParser {
 
                 //If buyer rating is "NULL", that means buyer info hasn't been added
                 if(updateByr.get(2).equals("NULL"+columnSeparator)){ 
-                  updateByr.set(2, bidder.getAttribute("Rating")+columnSeparator);
-                  updateByr.set(3, getElementTextByTagNameNR(bidder, "Location")+columnSeparator);
-                  updateByr.set(4, getElementTextByTagNameNR(bidder, "Country"));
+                  updateByr.set(2, bidder.getAttribute("Rating")+columnSeparator); //Buy_Rating
+                  updateByr.set(3, getElementTextByTagNameNR(bidder, "Location")+columnSeparator); //Location
+                  updateByr.set(4, getElementTextByTagNameNR(bidder, "Country")); //Country
                   userRows.put(bidderID, updateByr);
                 }
              } else { //New UserID, create a new "row" for this user (<key, value> mapping)
