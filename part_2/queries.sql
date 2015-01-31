@@ -33,7 +33,7 @@ HAVING COUNT(*) = 4
  * so you can use this time point to decide which auction(s) are current. 
  * Pay special attention to the current auctions without any bid.
 */
-/*
+
 SELECT b.item_id
 FROM (SELECT item_id
 FROM Item
@@ -42,7 +42,7 @@ INNER JOIN Bid b
 ON (current_items.item_id=b.item_id)
 ORDER BY b.amount DESC
 LIMIT 1;
-*/
+/*
 SELECT item_id
 FROM (SELECT b.item_id, MAX(amount)                                                                                                           
 	  FROM (SELECT item_id                                                                                                                        
@@ -50,6 +50,7 @@ FROM (SELECT b.item_id, MAX(amount)
 			WHERE Ends > '2001-12-20 00:00:01') as current_items                                                                                        
 			INNER JOIN Bid b                                                                                                                            
 			ON (current_items.item_id=b.item_id)) as newtable;
+*/
 
 /*
  * Find the number of sellers whose rating is higher than 1000.

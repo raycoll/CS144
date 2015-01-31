@@ -302,9 +302,8 @@ class MyParser {
     } 
 
     static String escChar(String s){
-       //s= s.replace("\\", "\\\\");
-       return s.replace("\"", "\\\"").replace("\'", "\\\'").replace("%","\\%") //PERCENT DOESN'T WORK :(
-         .replace("%","\\%").replace("_","\\_");
+       //escape special characters
+       return s.replace("\"", "\\\"").replace("\'", "\\\'").replace("%","\\%").replace("_","\\_");
     }
 
     /* Parses an item node
@@ -379,7 +378,7 @@ class MyParser {
        //CATEGORY ARRAYLIST
        //Add each category paired with the current itemID
        for ( Element curCat : getElementsByTagNameNR(e, "Category")) {
-           itemCategoryRows.add(addCol(itemID, getElementText(curCat)));
+           itemCategoryRows.add(escChar(addCol(itemID, getElementText(curCat))));
        }
 
 
@@ -396,10 +395,10 @@ class MyParser {
           
       } else { //New UserID, create a new "row" for this user (<key, value> mapping)
         ArrayList<String> userRow = new ArrayList<String>(5);
-        userRow.add(sellerID+columnSeparator);
+        userRow.add(escChar(sellerID+columnSeparator));
         userRow.add(seller.getAttribute("Rating")+columnSeparator); //Sell_Rating
         userRow.add("\\N"+columnSeparator); //Buy_Rating
-        userRow.add("\\N"+columnSeparator); //Location
+        userRow.add(escChar("\\N"+columnSeparator)); //Location
         userRow.add("\\N"); //Country
         userRows.put(sellerID, userRow);    
       }
@@ -422,7 +421,7 @@ class MyParser {
              } catch(ParseException pe) {
                System.out.println("ERROR: Cannot parse date");
              }
-             bidRows.add(addCol(bidRow, strip(getElementTextByTagNameNR(curBid, "Amount"))));
+             bidRows.add(escChar(addCol(bidRow, strip(getElementTextByTagNameNR(curBid, "Amount")))));
              
 
 
@@ -435,16 +434,16 @@ class MyParser {
                 //If buyer rating is "\N", that means buyer info hasn't been added
                 if(updateByr.get(2).equals("\\N"+columnSeparator)){ 
                   updateByr.set(2, bidder.getAttribute("Rating")+columnSeparator); //Buy_Rating
-                  updateByr.set(3, getElementTextByTagNameNR(bidder, "Location")+columnSeparator); //Location
+                  updateByr.set(3, escChar(getElementTextByTagNameNR(bidder, "Location")+columnSeparator)); //Location
                   updateByr.set(4, getElementTextByTagNameNR(bidder, "Country")); //Country
                   userRows.put(bidderID, updateByr);
                 }
              } else { //New UserID, create a new "row" for this user (<key, value> mapping)
                 ArrayList<String> userRow = new ArrayList<String>(5);
-                userRow.add(bidderID+columnSeparator);
+                userRow.add(escChar(bidderID+columnSeparator));
                 userRow.add("\\N"+columnSeparator); //Sell_Rating
                 userRow.add(bidder.getAttribute("Rating")+columnSeparator); //Buy_Rating
-                userRow.add(getElementTextByTagNameNR(bidder, "Location")+columnSeparator); //Location
+                userRow.add(escChar(getElementTextByTagNameNR(bidder, "Location")+columnSeparator)); //Location
                 userRow.add(getElementTextByTagNameNR(bidder, "Country")); //Country
                 userRows.put(bidderID, userRow);   
              }
@@ -492,6 +491,7 @@ class MyParser {
         for ( Element curItem : getElementsByTagNameNR(doc.getDocumentElement(), "Item")) {
             parseItem(curItem);
         } 
+        
         //Printing tables for testing
         /*
         for(String r :itemRows) {
