@@ -37,17 +37,19 @@ HAVING COUNT(*) = 4
 SELECT b.item_id
 FROM (SELECT item_id
 FROM Item
-WHERE Ends > '2001-12-20 00:00:01') as current_items
+WHERE Ends > '2001-12-20 00:00:01'AND num_bids>0) as current_items
 INNER JOIN Bid b
 ON (current_items.item_id=b.item_id)
 ORDER BY b.amount DESC
 LIMIT 1;
+
+
 /*
 SELECT item_id
 FROM (SELECT b.item_id, MAX(amount)                                                                                                           
 	  FROM (SELECT item_id                                                                                                                        
 			FROM Item                                                                                                                                   
-			WHERE Ends > '2001-12-20 00:00:01') as current_items                                                                                        
+			WHERE Ends > '2001-12-20 00:00:01' AND num_bids>0) as current_items                                                                                        
 			INNER JOIN Bid b                                                                                                                            
 			ON (current_items.item_id=b.item_id)) as newtable;
 */
@@ -75,4 +77,4 @@ SELECT COUNT(DISTINCT(ic.category))
 FROM (SELECT item_id FROM Bid WHERE amount > 100) as bi,  ItemCategory ic
 WHERE ic.item_id=bi.item_id;
 
-/*SHOW PROFILES;*/
+/*SHOW PROFILES;*.
