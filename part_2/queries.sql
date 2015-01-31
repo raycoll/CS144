@@ -77,4 +77,4 @@ SELECT COUNT(DISTINCT(ic.category))
 FROM (SELECT item_id FROM Bid WHERE amount > 100) as bi,  ItemCategory ic
 WHERE ic.item_id=bi.item_id;
 
-/*SHOW PROFILES;*.
+/*SHOW PROFILES;*/

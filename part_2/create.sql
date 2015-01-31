@@ -23,7 +23,7 @@ CREATE TABLE Bid (
     item_id INT UNSIGNED NOT NULL,
     time TIMESTAMP NOT NULL,
     amount DECIMAL(8,2),
-    PRIMARY KEY(user_id, item_id, time)
+    PRIMARY KEY(user_id, time)
 ) COLLATE utf8_bin;
 
 CREATE TABLE AuctionUser (
