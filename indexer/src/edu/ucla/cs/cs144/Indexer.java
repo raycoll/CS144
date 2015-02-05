@@ -23,18 +23,34 @@ import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.util.Version;
 
 public class Indexer {
-    
+    Connection conn;
+    IndexWriter indexWriter;
+
     /** Creates a new instance of Indexer */
     public Indexer() {
     }
- 
-    private Connection conn; 
+    
     /* directory to store the index data files */
     private static final indexDir = "index_data";
 
-    private void createIndexWriter();
-    private void populateIndex();
-    private void closeIndexWriter();
+    private void createIndexWriter() throws IOException {
+        if (indexWriter == null) {
+            Directory indexDir = FSDirectory.open(new File("index-directory"));
+            IndexWriterConfig config = new IndexWriterConfig(Version.LUCENE_4_10_2, new StandardAnalyzer());
+            indexWriter = new IndexWriter(indexDir, config);
+        }
+    }
+
+    private void populateIndex() {
+    
+    }
+
+    /* Closes the indexWriter */
+    private void closeIndexWriter() throws IOException {
+        if (indexWriter != null) {
+            indexWriter.close();
+        }
+    }
 
     public void rebuildIndexes() {
 
@@ -65,17 +81,23 @@ public class Indexer {
          * and place your class source files at src/edu/ucla/cs/cs144/.
 	 * 
 	 */
-      
-        /* Creates new index and initializes its writer object */
-        createIndexWriter();
+        try {
+            /* Creates new index and initializes its writer object */
+            createIndexWriter();
 
-        /* Interface with the mysql database to populate the index */
-        fillIndex();
+            /* Interface with the mysql database to populate the index */
+            fillIndex();
 
-        /* Close index writer */
-        closeIndexWriter();
+            /* Close index writer */
+            closeIndexWriter();
 
-        // close the database connection
+        }
+        catch (IOException e) {
+            System.out.println("IOError: " + e.getMessage());
+            System.exit(1);
+        }
+
+    // close the database connection
 	try {
 	    conn.close();
 	} catch (SQLException ex) {
