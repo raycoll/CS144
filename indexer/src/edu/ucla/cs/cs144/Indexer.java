@@ -28,9 +28,17 @@ public class Indexer {
     public Indexer() {
     }
  
+    private Connection conn; 
+    /* directory to store the index data files */
+    private static final indexDir = "index_data";
+
+    private void createIndexWriter();
+    private void populateIndex();
+    private void closeIndexWriter();
+
     public void rebuildIndexes() {
 
-        Connection conn = null;
+        conn = null;
 
         // create a connection to the database to retrieve Items from MySQL
 	try {
@@ -38,7 +46,6 @@ public class Indexer {
 	} catch (SQLException ex) {
 	    System.out.println(ex);
 	}
-
 
 	/*
 	 * Add your code here to retrieve Items using the connection
@@ -58,7 +65,15 @@ public class Indexer {
          * and place your class source files at src/edu/ucla/cs/cs144/.
 	 * 
 	 */
+      
+        /* Creates new index and initializes its writer object */
+        createIndexWriter();
 
+        /* Interface with the mysql database to populate the index */
+        fillIndex();
+
+        /* Close index writer */
+        closeIndexWriter();
 
         // close the database connection
 	try {
