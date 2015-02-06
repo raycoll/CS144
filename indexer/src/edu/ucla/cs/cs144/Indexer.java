@@ -34,18 +34,58 @@ public class Indexer {
     }
     
     /* directory to store the index data files */
-    //private static final indexDir = "index_data";
 
     private void createIndexWriter() throws IOException {
         if (indexWriter == null) {
-            Directory indexDir = FSDirectory.open(new File("index-directory"));
+            Directory indexDir = FSDirectory.open(new File("index_data"));
             IndexWriterConfig config = new IndexWriterConfig(Version.LUCENE_4_10_2, new StandardAnalyzer());
             indexWriter = new IndexWriter(indexDir, config);
         }
     }
-
-    private void populateIndex() {
     
+    /* */
+    private void addItemToIndex(int i_id, String name, String item_text) throws {
+        Document item_doc = new Document();
+        // Item id will be a purely stored field since we dont want to index on it
+        item_doc.add(new StoredField("item_id", item_id));
+
+        // add name as a seperate field because we want to store it
+        item_doc.add(new TextField("name", item_name, Field.Store.YES));
+
+        /* add field for rest of indexable text(description + categories)
+           don't store this field since we aren't interested in returning it
+        */
+        item_doc.add(new TextField("item_text", item_text, Field.Store.NO));
+        
+        // Write the new item document to the index
+        indexWriter.addDocument(item_doc);
+    }
+    /* */
+    private void populateIndex() {
+        DbSearcher s = new DbSearcher(conn);
+        try {
+            // pull in categories from database 
+            s.mapCategories();
+
+            // retrieve all items from database
+            ResultSet items = s.getItems();
+      
+            // add every item to the index
+            while( rs.next() ){ 
+                int i_id = items.getInt("item_id");
+                String name = items.getString("name");
+                String description = rs.getString("description");
+                
+                // get categories associated with item
+                String cats = s.getCategoriesById(i_id);
+                 
+                //add item to index with name, description and categories indexable
+                addItemToIndex(i_id,name,description + " " + cats);
+            } 
+        }
+        catch (SQLException|IOException e) {
+            System.out.println("Failed to populate index! " + e.getMessage());
+            System.exit(1);
     }
 
     /* Closes the indexWriter */
@@ -84,59 +124,9 @@ public class Indexer {
          * and place your class source files at src/edu/ucla/cs/cs144/.
 	 * 
 	 */ try {
-            String i_id, cat, name, description;
             
-            //Get all categories
-            Statement cat_s = conn.createStatement();
-            ResultSet cat_rs = cat_s.executeQuery("SELECT * FROM ItemCategory");
-
-            while (cat_rs.next()) {
-                i_id = cat_rs.getString("item_id");
-                cat = cat_rs.getString("category");
-
-                //If no categories have been mapped for this item_id yet
-                if(catMap.get(i_id) == null) {
-                    ArrayList<String> catList = new ArrayList<String>();
-                    catList.add(cat);
-                    catMap.put(i_id, catList);
-                } else {
-                    ArrayList<String> newCatList = catMap.get(i_id);
-                    newCatList.add(cat);
-                    catMap.put(i_id, newCatList);
-                }
-            }
-            cat_rs.close();
-            cat_s.close();
-
-            //Get all items 
-            Statement s = conn.createStatement() ;
-            ResultSet rs = s.executeQuery("SELECT item_id, name, description FROM Item");
-            //For every item
-            while( rs.next() ){ 
-                i_id = rs.getString("item_id");
-                name = rs.getString("name");
-                description= rs.getString("description");
-
-                //Create string of all of this current item's categories
-                StringBuilder catBuilder = new StringBuilder();
-                ArrayList<String> cats = catMap.get(i_id);
-                for(String curCat : cats) {
-                    catBuilder.append(curCat);
-                    catBuilder.append(" ");
-                }
-                String itemCats = catBuilder.toString();
-
-                //Insert code here to add index with name, category, description
-            }
-
-            //close the resultset, statement and connection
-            rs.close();
-            s.close();
-
-            conn.close();
-        } /*catch (ClassNotFoundException ex){
-            System.out.println(ex);
-        }*/ catch (SQLException ex){
+            
+        } catch (SQLException ex){
             System.out.println("SQLException caught");
             System.out.println("---");
             while ( ex != null ){
