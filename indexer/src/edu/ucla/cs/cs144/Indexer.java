@@ -22,12 +22,10 @@ import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.util.Version;
 
-import java.util.*;
-
 public class Indexer {
     Connection conn;
     IndexWriter indexWriter;
-    static HashMap<String, ArrayList<String>> catMap = new HashMap<String, ArrayList<String>>();
+    
 
     /** Creates a new instance of Indexer */
     public Indexer() {
@@ -84,56 +82,31 @@ public class Indexer {
          * and place your class source files at src/edu/ucla/cs/cs144/.
 	 * 
 	 */ try {
-            String i_id, cat, name, description;
+            String cats, name, description;
+            int i_id;
+            DbSearcher db = new DbSearcher(conn);
+
+            db.mapCategories();
+
+            ResultSet item_rs = db.getItems();
             
-            //Get all categories
-            Statement cat_s = conn.createStatement();
-            ResultSet cat_rs = cat_s.executeQuery("SELECT * FROM ItemCategory");
-
-            while (cat_rs.next()) {
-                i_id = cat_rs.getString("item_id");
-                cat = cat_rs.getString("category");
-
-                //If no categories have been mapped for this item_id yet
-                if(catMap.get(i_id) == null) {
-                    ArrayList<String> catList = new ArrayList<String>();
-                    catList.add(cat);
-                    catMap.put(i_id, catList);
-                } else {
-                    ArrayList<String> newCatList = catMap.get(i_id);
-                    newCatList.add(cat);
-                    catMap.put(i_id, newCatList);
-                }
-            }
-            cat_rs.close();
-            cat_s.close();
-
-            //Get all items 
-            Statement s = conn.createStatement() ;
-            ResultSet rs = s.executeQuery("SELECT item_id, name, description FROM Item");
             //For every item
-            while( rs.next() ){ 
-                i_id = rs.getString("item_id");
-                name = rs.getString("name");
-                description= rs.getString("description");
+            while(item_rs.next() ){ 
+                i_id = item_rs.getInt("item_id");
+                name = item_rs.getString("name");
+                description= item_rs.getString("description");
 
-                //Create string of all of this current item's categories
-                StringBuilder catBuilder = new StringBuilder();
-                ArrayList<String> cats = catMap.get(i_id);
-                for(String curCat : cats) {
-                    catBuilder.append(curCat);
-                    catBuilder.append(" ");
-                }
-                String itemCats = catBuilder.toString();
 
+                cats = db.getCategoriesById(i_id);
                 //Insert code here to add index with name, category, description
             }
 
             //close the resultset, statement and connection
-            rs.close();
-            s.close();
+            item_rs.close();
+            db.closeStatement();
 
             conn.close();
+
         } /*catch (ClassNotFoundException ex){
             System.out.println(ex);
         }*/ catch (SQLException ex){
