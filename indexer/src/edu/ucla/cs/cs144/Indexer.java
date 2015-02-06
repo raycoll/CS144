@@ -22,12 +22,10 @@ import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.util.Version;
 
-import java.util.*;
-
 public class Indexer {
     Connection conn;
     IndexWriter indexWriter;
-    static HashMap<String, ArrayList<String>> catMap = new HashMap<String, ArrayList<String>>();
+    
 
     /** Creates a new instance of Indexer */
     public Indexer() {
@@ -122,29 +120,14 @@ public class Indexer {
          * If you create new classes, make sure that
          * the classes become part of "edu.ucla.cs.cs144" package
          * and place your class source files at src/edu/ucla/cs/cs144/.
-	 * 
-	 */ try {
-            
-            
-        } catch (SQLException ex){
-            System.out.println("SQLException caught");
-            System.out.println("---");
-            while ( ex != null ){
-                System.out.println("Message   : " + ex.getMessage());
-                System.out.println("SQLState  : " + ex.getSQLState());
-                System.out.println("ErrorCode : " + ex.getErrorCode());
-                System.out.println("---");
-                ex = ex.getNextException();
-            }
-        }
-
-/*
+	 */ 
+	 
         try {
             //Creates new index and initializes its writer object
             createIndexWriter();
 
             //Interface with the mysql database to populate the index
-            fillIndex();
+            populateIndex();
 
             //Close index writer 
             closeIndexWriter();
@@ -153,7 +136,6 @@ public class Indexer {
             System.out.println("IOError: " + e.getMessage());
             System.exit(1);
         }
-*/
         // close the database connection
 	   try {
 	       conn.close();
