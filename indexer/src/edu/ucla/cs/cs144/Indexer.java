@@ -39,6 +39,8 @@ public class Indexer {
             Directory indexDir = FSDirectory.open(new File("/var/lib/lucene/item_index"));
             IndexWriterConfig config = new IndexWriterConfig(Version.LUCENE_4_10_2, new StandardAnalyzer());
             indexWriter = new IndexWriter(indexDir, config);
+            indexWriter.deleteAll();
+            indexWriter.commit();
         }
     }
     
