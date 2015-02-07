@@ -105,9 +105,7 @@ public class AuctionSearch implements IAuctionSearch {
             ScoreDoc[] resultScores = t.scoreDocs;
             for(int i = numResultsToSkip; i < resultLen; i++) {
                 Document doc = searcher.doc(resultScores[i].doc);
-                res[i].setName(doc.get("item_name"));
-                res[i].setItemId(doc.get("item_id"));
-                
+                res[i] = new SearchResult(doc.get("item_id"),doc.get("item_name"));    
             }
             
         }
