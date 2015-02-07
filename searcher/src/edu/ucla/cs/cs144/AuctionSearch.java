@@ -70,11 +70,13 @@ public class AuctionSearch implements IAuctionSearch {
 
 	public SearchResult[] basicSearch(String query, int numResultsToSkip, 
 			int numResultsToReturn) {
+        SearchResult[] res = null;
+        
         // return null if asked to skip all or more returned
         if (numResultsToSkip >= numResultsToReturn) {
             return null;
         }
-
+        
         try {
             // parse query 
             Query q = parser.parse(query); 
@@ -99,21 +101,22 @@ public class AuctionSearch implements IAuctionSearch {
             }
             
             // populate results array
-            SearchResult[] res = new SearchResult[resultLen];
+            res = new SearchResult[resultLen];
             ScoreDoc[] resultScores = t.scoreDocs;
             for(int i = numResultsToSkip; i < resultLen; i++) {
-                Document doc = .getDocument(resultScores[i].doc);
+                Document doc = searcher.doc(resultScores[i].doc);
                 res[i].setName(doc.get("item_name"));
                 res[i].setItemId(doc.get("item_id"));
                 
             }
             
-            return res; 
         }
         catch (ParseException|IOException e) {
             System.out.println("query search failed! " + e.getMessage());
             System.exit(1);
         }
+
+        return res;
 	}
 
 	public SearchResult[] spatialSearch(String query, SearchRegion region,
