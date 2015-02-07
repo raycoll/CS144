@@ -14,6 +14,7 @@ import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.document.StringField;
 import org.apache.lucene.document.TextField;
+import org.apache.lucene.document.StoredField;
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.index.IndexWriter;
@@ -41,8 +42,12 @@ public class Indexer {
         }
     }
     
-    /* */
-    private void addItemToIndex(int i_id, String name, String item_text) throws {
+    /** 
+       Writes a single item to the index
+       @param item_id item id for the item to instert 
+       @param name name of the item
+       @param item_text any other searchable text(description, categories, etc) */
+    private void addItemToIndex(int item_id, String item_name, String item_text) throws IOException {
         Document item_doc = new Document();
         // Item id will be a purely stored field since we dont want to index on it
         item_doc.add(new StoredField("item_id", item_id));
@@ -58,7 +63,10 @@ public class Indexer {
         // Write the new item document to the index
         indexWriter.addDocument(item_doc);
     }
-    /* */
+
+    /**
+        Populates the index using item data from the database
+     */
     private void populateIndex() {
         DbSearcher s = new DbSearcher(conn);
         try {
@@ -69,10 +77,10 @@ public class Indexer {
             ResultSet items = s.getItems();
       
             // add every item to the index
-            while( rs.next() ){ 
+            while( items.next() ){ 
                 int i_id = items.getInt("item_id");
                 String name = items.getString("name");
-                String description = rs.getString("description");
+                String description = items.getString("description");
                 
                 // get categories associated with item
                 String cats = s.getCategoriesById(i_id);
@@ -84,16 +92,22 @@ public class Indexer {
         catch (SQLException|IOException e) {
             System.out.println("Failed to populate index! " + e.getMessage());
             System.exit(1);
+        }
     }
 
-    /* Closes the indexWriter */
+    /**
+        Closes the previously opened indexWriter 
+    */
     private void closeIndexWriter() throws IOException {
         if (indexWriter != null) {
             indexWriter.close();
         }
     }
 
-    public void rebuildIndexes() throws SQLException{
+    /**
+        Rebuilds the index 
+    */
+    public void rebuildIndexes() {
 
         conn = null;
 
