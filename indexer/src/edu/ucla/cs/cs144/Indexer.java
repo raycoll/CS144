@@ -89,8 +89,9 @@ public class Indexer {
                 addItemToIndex(i_id,name,description + " " + cats);
             }
             
-            // close resultset 
+            // close resultset and statement
             items.close(); 
+            s.closeItemStatement();
         }
         catch (SQLException|IOException e) {
             System.out.println("Failed to populate index! " + e.getMessage());
