@@ -34,6 +34,8 @@ import edu.ucla.cs.cs144.SearchRegion;
 import edu.ucla.cs.cs144.SearchResult;
 
 public class AuctionSearch implements IAuctionSearch {
+    IndexSearcher searcher;
+    QueryParser parser;
 
 	/* 
          * You will probably have to use JDBC to access MySQL data
@@ -49,11 +51,28 @@ public class AuctionSearch implements IAuctionSearch {
          * placed at src/edu/ucla/cs/cs144.
          *
          */
-	
+
+    /** Creates a new instance of SearchEngine */
+    public AuctionSearch() {
+        try {
+        searcher = new IndexSearcher(DirectoryReader.open(FSDirectory.open(new File("/var/lib/lucene/item_index"))));
+        
+        // specify search fields
+        String[] searchFields = new String[2];
+        searchFields[0] = "item_name";
+        searchFields[1] = "item_text";
+        
+        parser = new MultiFieldQueryParser(searchFields, new StandardAnalyzer());
+        }
+        catch (IOException e) {
+            System.out.println("failed to open index or parser! " + e.getMessage());
+            System.exit(1);
+        }
+    }	
+
 	public SearchResult[] basicSearch(String query, int numResultsToSkip, 
 			int numResultsToReturn) {
-		// TODO: Your code here!
-		return new SearchResult[0];
+        			
 	}
 
 	public SearchResult[] spatialSearch(String query, SearchRegion region,
