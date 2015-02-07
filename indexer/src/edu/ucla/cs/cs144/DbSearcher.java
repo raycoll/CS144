@@ -13,7 +13,7 @@ import java.sql.Statement;
 
 class DbSearcher {
     Connection conn; 
-    static HashMap<Integer, ArrayList<String>> catMap = new HashMap<Integer, ArrayList<String>>();
+    static HashMap<String, ArrayList<String>> catMap = new HashMap<String, ArrayList<String>>();
     Statement item_s;
 
     DbSearcher(Connection c) {
@@ -31,7 +31,7 @@ class DbSearcher {
         ResultSet cat_rs= cat_s.executeQuery("SELECT * FROM ItemCategory");
 
         while (cat_rs.next()) {
-            int i_id = cat_rs.getInt("item_id");
+            String i_id = cat_rs.getString("item_id");
             String cat = cat_rs.getString("category");
 
             //If no categories have been mapped for this item_id yet
@@ -49,7 +49,7 @@ class DbSearcher {
         cat_s.close();       
     }
 
-    String getCategoriesById(int item_id) throws SQLException {
+    String getCategoriesById(String item_id) throws SQLException {
     	//Create string of all of this current item's categories
         StringBuilder catBuilder = new StringBuilder();
         ArrayList<String> cats = catMap.get(item_id);
