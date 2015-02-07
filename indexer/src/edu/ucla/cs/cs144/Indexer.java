@@ -53,7 +53,7 @@ public class Indexer {
         item_doc.add(new StoredField("item_id", item_id));
 
         // add name as a seperate field because we want to store it
-        item_doc.add(new TextField("name", item_name, Field.Store.YES));
+        item_doc.add(new TextField("item_name", item_name, Field.Store.YES));
 
         /* add field for rest of indexable text(description + categories)
            don't store this field since we aren't interested in returning it
@@ -87,7 +87,11 @@ public class Indexer {
                  
                 //add item to index with name, description and categories indexable
                 addItemToIndex(i_id,name,description + " " + cats);
-            } 
+            }
+            
+            // close resultset and statement
+            items.close(); 
+            s.closeItemStatement();
         }
         catch (SQLException|IOException e) {
             System.out.println("Failed to populate index! " + e.getMessage());
