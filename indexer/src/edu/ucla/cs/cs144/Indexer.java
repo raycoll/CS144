@@ -87,7 +87,10 @@ public class Indexer {
                  
                 //add item to index with name, description and categories indexable
                 addItemToIndex(i_id,name,description + " " + cats);
-            } 
+            }
+            
+            // close resultset 
+            items.close(); 
         }
         catch (SQLException|IOException e) {
             System.out.println("Failed to populate index! " + e.getMessage());
