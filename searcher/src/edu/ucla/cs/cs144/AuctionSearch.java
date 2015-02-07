@@ -21,6 +21,7 @@ import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.lucene.queryparser.classic.ParseException;
+import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.search.ScoreDoc;
@@ -52,17 +53,14 @@ public class AuctionSearch implements IAuctionSearch {
          *
          */
 
+
     /** Creates a new instance of SearchEngine */
     public AuctionSearch() {
         try {
         searcher = new IndexSearcher(DirectoryReader.open(FSDirectory.open(new File("/var/lib/lucene/item_index"))));
         
-        // specify search fields
-        String[] searchFields = new String[2];
-        searchFields[0] = "item_name";
-        searchFields[1] = "item_text";
         
-        parser = new MultiFieldQueryParser(searchFields, new StandardAnalyzer());
+        parser = new QueryParser("item_text", new StandardAnalyzer());
         }
         catch (IOException e) {
             System.out.println("failed to open index or parser! " + e.getMessage());
@@ -72,7 +70,50 @@ public class AuctionSearch implements IAuctionSearch {
 
 	public SearchResult[] basicSearch(String query, int numResultsToSkip, 
 			int numResultsToReturn) {
-        			
+        // return null if asked to skip all or more returned
+        if (numResultsToSkip >= numResultsToReturn) {
+            return null;
+        }
+
+        try {
+            // parse query 
+            Query q = parser.parse(query); 
+            
+            // perform search
+            TopDocs t = searcher.search(q, numResultsToReturn);
+            
+            // return null if skipping more results than returned
+            if (t.scoreDocs.length <= numResultsToSkip) {
+                return null;
+            }
+
+            // set size of output array depending number of results returned
+            // if they are more than numResultsToReturn, set size to be 
+            // numResultsToReturn, otherwise use the smaller length 
+            int resultLen;
+            if ((t.scoreDocs.length - numResultsToSkip) > numResultsToReturn) {
+                resultLen = numResultsToReturn;
+            }
+            else {
+                resultLen = t.scoreDocs.length - numResultsToSkip;
+            }
+            
+            // populate results array
+            SearchResult[] res = new SearchResults[resultLen];
+            ScoreDoc[] resultScores = t.scoreDocs;
+            for(int i = numResultsToSkip; i < resultLen; i++) {
+                Document doc = instance.getDocument(resultScores[i].doc);
+                res[i].setName(doc.get("item_name"));
+                res[i].setItemId(doc.get("item_id"));
+                
+            }
+            
+            return res; 
+        }
+        catch (ParseException|IOException e) {
+            System.out.println("query search failed! " + e.getMessage());
+            System.exit(1);
+        }
 	}
 
 	public SearchResult[] spatialSearch(String query, SearchRegion region,
