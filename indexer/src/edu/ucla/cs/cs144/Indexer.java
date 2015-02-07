@@ -46,14 +46,15 @@ public class Indexer {
        Writes a single item to the index
        @param item_id item id for the item to instert 
        @param name name of the item
-       @param item_text any other searchable text(description, categories, etc) */
+       @param item_text any other searchable text(description, categories, etc) 
+       */
     private void addItemToIndex(String item_id, String item_name, String item_text) throws IOException {
         Document item_doc = new Document();
         // Item id will be a purely stored field since we dont want to index on it
-        item_doc.add(new StoredField("item_id", item_id));
+        item_doc.add(new StringField("item_id", item_id, Field.Store.YES));
 
         // add name as a seperate stored field because we want to retrieve it
-        item_doc.add(new StoredField("item_name", item_name));
+        item_doc.add(new StringField("item_name", item_name, Field.Store.YES));
 
         /* add field for rest of indexable text(description + categories)
            don't store this field since we aren't interested in returning it
