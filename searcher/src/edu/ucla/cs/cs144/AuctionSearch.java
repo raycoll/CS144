@@ -68,6 +68,16 @@ public class AuctionSearch implements IAuctionSearch {
         }
     }	
 
+    public int getResultLen(int numResultsToSkip, int numResultsToReturn) {
+            // set size of output array depending number of results returned
+            // if they are more than numResultsToReturn, set size to be 
+            // numResultsToReturn, otherwise use the smaller length 
+            if ((t.scoreDocs.length - numResultsToSkip) > numResultsToReturn) {
+                return numResultsToReturn;
+            }
+            return t.scoreDocs.length - numResultsToSkip;
+    }
+
 	public SearchResult[] basicSearch(String query, int numResultsToSkip, 
 			int numResultsToReturn) {
         SearchResult[] res = null;
@@ -89,16 +99,7 @@ public class AuctionSearch implements IAuctionSearch {
                 return null;
             }
 
-            // set size of output array depending number of results returned
-            // if they are more than numResultsToReturn, set size to be 
-            // numResultsToReturn, otherwise use the smaller length 
-            int resultLen;
-            if ((t.scoreDocs.length - numResultsToSkip) > numResultsToReturn) {
-                resultLen = numResultsToReturn;
-            }
-            else {
-                resultLen = t.scoreDocs.length - numResultsToSkip;
-            }
+            int resultLen = getResultLen(numResultsToSkip, numResultsToReturn)
             
             // populate results array
             res = new SearchResult[resultLen];
@@ -125,6 +126,19 @@ public class AuctionSearch implements IAuctionSearch {
 
 	public String getXMLDataForItemId(String itemId) {
 		// TODO: Your code here!
+        DbManager db = new DbManager();
+        Connection conn = getConnection(true);
+        Statement s = conn.createStatement();
+
+        RestultSet rs = s.executeQuery("SELECT * FROM Item WHERE item_id ="+itemId);
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("<Item ItemID=\"").append(itemId).append("\"\n"); 
+
+
+
+
+
 		return "";
 	}
 	
