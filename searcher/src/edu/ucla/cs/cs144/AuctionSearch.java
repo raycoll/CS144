@@ -118,10 +118,16 @@ public class AuctionSearch implements IAuctionSearch {
         return res;
 	}
 
+    /** Returns a list of item_ids from the mysql database 
+      * that are in the given region 
+      */
+    private SearchResult[] getItemsInRegion(SearchRegion region) {
+        
+    }
+        
 	public SearchResult[] spatialSearch(String query, SearchRegion region,
 			int numResultsToSkip, int numResultsToReturn) {
-		// TODO: Your code here!
-		return new SearchResult[0];
+        	
 	}
 
 	public String getXMLDataForItemId(String itemId) {
