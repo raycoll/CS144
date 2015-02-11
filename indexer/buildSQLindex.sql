@@ -10,10 +10,13 @@ ENGINE=MyISAM;
 
 /* load data into location table */
 INSERT INTO Location(item_id, g)
-VALUES (
-    SELECT item_id, GeomFromText('POINT(lat,long)')
-    FROM Item
-);
+SELECT item_id, Point(1,1)
+FROM Item
+WHERE latitude IS NOT NULL AND longitude IS NOT NULL;
+
+UPDATE Location,Item 
+SET g = PointFromText(CONCAT('POINT(',longitude,' ',latitude,')')) 
+WHERE Location.item_id=Item.item_id;
 
 
 /* Create the spacial index */
