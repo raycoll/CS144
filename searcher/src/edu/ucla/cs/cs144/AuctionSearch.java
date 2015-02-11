@@ -68,6 +68,16 @@ public class AuctionSearch implements IAuctionSearch {
         }
     }	
 
+    public int getResultLen(TopDocs t, int numResultsToSkip, int numResultsToReturn) {
+            // set size of output array depending number of results returned
+            // if they are more than numResultsToReturn, set size to be 
+            // numResultsToReturn, otherwise use the smaller length 
+            if ((t.scoreDocs.length - numResultsToSkip) > numResultsToReturn) {
+                return numResultsToReturn;
+            }
+            return t.scoreDocs.length - numResultsToSkip;
+    }
+
 	public SearchResult[] basicSearch(String query, int numResultsToSkip, 
 			int numResultsToReturn) {
         SearchResult[] res = null;
@@ -89,16 +99,7 @@ public class AuctionSearch implements IAuctionSearch {
                 return null;
             }
 
-            // set size of output array depending number of results returned
-            // if they are more than numResultsToReturn, set size to be 
-            // numResultsToReturn, otherwise use the smaller length 
-            int resultLen;
-            if ((t.scoreDocs.length - numResultsToSkip) > numResultsToReturn) {
-                resultLen = numResultsToReturn;
-            }
-            else {
-                resultLen = t.scoreDocs.length - numResultsToSkip;
-            }
+            int resultLen = getResultLen(t, numResultsToSkip, numResultsToReturn);
             
             // populate results array
             res = new SearchResult[resultLen];
@@ -120,8 +121,27 @@ public class AuctionSearch implements IAuctionSearch {
     /** Returns a list of item_ids from the mysql database 
       * that are in the given region 
       */
-    private SearchResult[] getItemsInRegion(SearchRegion region) {
-    
+    private SearchResult[] getItemsInRegion(SearchRegion region) throws SQLException{
+       // DbManager db = new DbManager();
+        Connection conn = DbManager.getConnection(true);
+        Statement s = conn.createStatement();
+        double minx = region.getLx();
+        double miny = region.getLy();
+        double maxx = region.getRx();
+        double maxy = region.getRy();
+
+      //  s.executeQuery("GeomFromText(Polygon("+minx+" "+miny+", " "))")
+
+        ResultSet rs = s.executeQuery("SELECT item_id FROM Location WHERE containts(point("+region.getLx()+", "
+            +region.getLy()+"), point("+region.getRx()+", "+region.getRy()+"))");
+        //latitude x, longitude y
+        SearchResult[] res = new SearchResult[rs.getFetchSize()];
+        int i =0;
+        while(rs.next()) {
+            res[i]=new SearchResult();
+            res[i].setItemId(rs.getString("item_id"));
+        }
+        return res;
     }
         
 	public SearchResult[] spatialSearch(String query, SearchRegion region,
@@ -173,6 +193,16 @@ public class AuctionSearch implements IAuctionSearch {
 
 	public String getXMLDataForItemId(String itemId) {
 		// TODO: Your code here!
+       // DbManager db = new DbManager();
+       /*
+        Connection conn = DbManager.getConnection(true);
+        Statement s = conn.createStatement();
+
+        ResultSet rs = s.executeQuery("SELECT * FROM Item WHERE item_id ="+itemId);
+
+        StringBuilder sb = new StringBuilder();
+*/
+
 		return "";
 	}
 	
