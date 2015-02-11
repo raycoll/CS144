@@ -68,7 +68,7 @@ public class AuctionSearch implements IAuctionSearch {
         }
     }	
 
-    public int getResultLen(int numResultsToSkip, int numResultsToReturn) {
+    public int getResultLen(TopDocs t, int numResultsToSkip, int numResultsToReturn) {
             // set size of output array depending number of results returned
             // if they are more than numResultsToReturn, set size to be 
             // numResultsToReturn, otherwise use the smaller length 
@@ -99,7 +99,7 @@ public class AuctionSearch implements IAuctionSearch {
                 return null;
             }
 
-            int resultLen = getResultLen(numResultsToSkip, numResultsToReturn)
+            int resultLen = getResultLen(t, numResultsToSkip, numResultsToReturn);
             
             // populate results array
             res = new SearchResult[resultLen];
@@ -121,29 +121,45 @@ public class AuctionSearch implements IAuctionSearch {
     /** Returns a list of item_ids from the mysql database 
       * that are in the given region 
       */
-    private SearchResult[] getItemsInRegion(SearchRegion region) {
-        
+    private SearchResult[] getItemsInRegion(SearchRegion region) throws SQLException{
+       // DbManager db = new DbManager();
+        Connection conn = DbManager.getConnection(true);
+        Statement s = conn.createStatement();
+        double minx = region.getLx();
+        double miny = region.getLy();
+        double maxx = region.getRx();
+        double maxy = region.getRy();
+
+      //  s.executeQuery("GeomFromText(Polygon("+minx+" "+miny+", " "))")
+
+        ResultSet rs = s.executeQuery("SELECT item_id FROM Location WHERE containts(point("+region.getLx()+", "
+            +region.getLy()+"), point("+region.getRx()+", "+region.getRy()+"))");
+        //latitude x, longitude y
+        SearchResult[] res = new SearchResult[rs.getFetchSize()];
+        int i =0;
+        while(rs.next()) {
+            res[i]=new SearchResult();
+            res[i].setItemId(rs.getString("item_id"));
+        }
+        return res;
     }
         
 	public SearchResult[] spatialSearch(String query, SearchRegion region,
 			int numResultsToSkip, int numResultsToReturn) {
-        	
+        	return new SearchResult[1];
 	}
 
 	public String getXMLDataForItemId(String itemId) {
 		// TODO: Your code here!
-        DbManager db = new DbManager();
-        Connection conn = getConnection(true);
+       // DbManager db = new DbManager();
+       /*
+        Connection conn = DbManager.getConnection(true);
         Statement s = conn.createStatement();
 
-        RestultSet rs = s.executeQuery("SELECT * FROM Item WHERE item_id ="+itemId);
+        ResultSet rs = s.executeQuery("SELECT * FROM Item WHERE item_id ="+itemId);
 
         StringBuilder sb = new StringBuilder();
-        sb.append("<Item ItemID=\"").append(itemId).append("\"\n"); 
-
-
-
-
+*/
 
 		return "";
 	}

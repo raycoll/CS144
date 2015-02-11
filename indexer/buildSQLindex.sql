@@ -15,7 +15,7 @@ FROM Item
 WHERE latitude IS NOT NULL AND longitude IS NOT NULL;
 
 UPDATE Location,Item 
-SET g = PointFromText(CONCAT('POINT(',longitude,' ',latitude,')')) 
+SET g = PointFromText(CONCAT('POINT(',latitude,' ',longitude,')')) 
 WHERE Location.item_id=Item.item_id;
 
 
