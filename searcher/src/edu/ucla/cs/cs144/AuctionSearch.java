@@ -121,12 +121,54 @@ public class AuctionSearch implements IAuctionSearch {
       * that are in the given region 
       */
     private SearchResult[] getItemsInRegion(SearchRegion region) {
-        
+    
     }
         
 	public SearchResult[] spatialSearch(String query, SearchRegion region,
 			int numResultsToSkip, int numResultsToReturn) {
-        	
+        // Perform spatial query 
+        SearchResult[] spatialResults = getItemsInRegion(region);
+        if (spatialResults == null) {
+            return null;
+        }
+
+        // Perform basic search
+        SearchResult[] queryResults = basicSearch(query,0, 9999); 
+        if (queryResults == null) {
+            return null;
+        }
+
+        // Get intersection
+        SearchResult[] intersection = new SearchResult[9999];
+        int intersection_size = 0; 
+        for(int i = 0; i < queryResults.length; i++) { 
+            for (int j = 0; j < spatialResults.length; j++) {
+                if (queryResults[i].getItemId().equals(spatialResults[j].getItemId())) {
+                    intersection[intersection_size] = queryResults[i];
+                    intersection_size++;
+                }    
+           	}
+        }
+
+        // Create output array
+        int output_size = 0;
+        if (intersection_size <= numResultsToSkip) {
+            return null;
+        }
+        else if (intersection_size < numResultsToSkip + numResultsToReturn) {
+            output_size = intersection_size - numResultsToSkip; 
+        }
+        else { // intersection_size >= numResultsToSkip + numResultsToReturn
+            output_size = numResultsToReturn;
+        }
+        SearchResult[] output = new SearchResult[output_size];
+
+        // Fill output array
+        for (int i = 0; i < output_size; i++) {
+            output[i] = intersection[i + numResultsToSkip];
+        }
+
+        return output;
 	}
 
 	public String getXMLDataForItemId(String itemId) {
