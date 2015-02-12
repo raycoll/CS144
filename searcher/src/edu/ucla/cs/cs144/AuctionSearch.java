@@ -122,7 +122,7 @@ public class AuctionSearch implements IAuctionSearch {
       * that are in the given region 
       */
     private SearchResult[] getItemsInRegion(SearchRegion region) throws SQLException{
-       // DbManager db = new DbManager();
+
         Connection conn = DbManager.getConnection(true);
         Statement s = conn.createStatement();
         double minx = region.getLx();
@@ -130,16 +130,15 @@ public class AuctionSearch implements IAuctionSearch {
         double maxx = region.getRx();
         double maxy = region.getRy();
 
-      //  s.executeQuery("GeomFromText(Polygon("+minx+" "+miny+", " "))")
-
-        ResultSet rs = s.executeQuery("SELECT item_id FROM Location WHERE containts(point("+region.getLx()+", "
-            +region.getLy()+"), point("+region.getRx()+", "+region.getRy()+"))");
-        //latitude x, longitude y
+        ResultSet rs = s.executeQuery("SELECT item_id FROM Location WHERE MBRCONTAINS(GeomFromText('Polygon(("+minx+" "
+            +miny+", "+maxx+" "+miny+", "+maxx+" "+maxy+", "+minx+" "maxy+", "+minx+" "+miny+"))'), g) =1;"
+        
         SearchResult[] res = new SearchResult[rs.getFetchSize()];
         int i =0;
         while(rs.next()) {
             res[i]=new SearchResult();
             res[i].setItemId(rs.getString("item_id"));
+            i++;
         }
         return res;
     }
@@ -193,7 +192,7 @@ public class AuctionSearch implements IAuctionSearch {
 
 	public String getXMLDataForItemId(String itemId) {
 		// TODO: Your code here!
-       // DbManager db = new DbManager();
+       ///DbManager db = new DbManager();
        /*
         Connection conn = DbManager.getConnection(true);
         Statement s = conn.createStatement();
