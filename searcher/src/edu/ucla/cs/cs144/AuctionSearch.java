@@ -84,7 +84,7 @@ public class AuctionSearch implements IAuctionSearch {
         
         // return null if asked to skip all or more returned
         if (numResultsToSkip >= numResultsToReturn) {
-            return null;
+            return new SearchResult[0];
         }
         
         try {
@@ -96,7 +96,7 @@ public class AuctionSearch implements IAuctionSearch {
             
             // return null if skipping more results than returned
             if (t.scoreDocs.length <= numResultsToSkip) {
-                return null;
+                return new SearchResult[0];
             }
 
             int resultLen = getResultLen(t, numResultsToSkip, numResultsToReturn);
@@ -161,14 +161,14 @@ public class AuctionSearch implements IAuctionSearch {
 			int numResultsToSkip, int numResultsToReturn) {
         // Perform spatial query 
         SearchResult[] spatialResults = getItemsInRegion(region);
-        if (spatialResults == null) {
-            return null;
+        if (spatialResults.length == 0) {
+            return new SearchResult[0];
         }
 
         // Perform basic search
         SearchResult[] queryResults = basicSearch(query,0, 9999); 
-        if (queryResults == null) {
-            return null;
+        if (queryResults.length == 0) {
+            return new SearchResult[0];
         }
 
         // Get intersection
@@ -186,7 +186,7 @@ public class AuctionSearch implements IAuctionSearch {
         // Create output array
         int output_size = 0;
         if (intersection_size <= numResultsToSkip) {
-            return null;
+            return new SearchResult[0];
         }
         else if (intersection_size < numResultsToSkip + numResultsToReturn) {
             output_size = intersection_size - numResultsToSkip; 
