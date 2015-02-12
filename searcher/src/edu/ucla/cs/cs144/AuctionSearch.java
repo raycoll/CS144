@@ -126,7 +126,7 @@ public class AuctionSearch implements IAuctionSearch {
         Connection conn;
         ResultSet rs;
         int size;
-        SearchResult[] res=null;
+        SearchResult[] res= new SearchResult[0];
       try{
         conn = DbManager.getConnection(true);
         s = conn.createStatement();
@@ -140,16 +140,18 @@ public class AuctionSearch implements IAuctionSearch {
             +", "+maxx+" "+maxy+", "+minx+" "+maxy+", "+minx+" "+miny+"))\'), g) =1;");
         size =rs.getFetchSize();
 
-        res = new SearchResult[size];
-        int i =0;
-        while(rs.next()) {
-            res[i]=new SearchResult();
-            res[i].setItemId(rs.getString("item_id"));
-            i++;
+        if(size > 0) {
+            res = new SearchResult[size];
+            int i =0;
+            while(rs.next()) {
+                res[i]=new SearchResult();
+                res[i].setItemId(rs.getString("item_id"));
+                i++;
+            }
         }
       }catch (SQLException e) {
-                System.out.println("ERROR: SQLException "+e.getMessage());
-                System.exit(1);
+            System.out.println("ERROR: SQLException "+e.getMessage());
+            System.exit(1);
       }
       return res;
       
@@ -205,17 +207,21 @@ public class AuctionSearch implements IAuctionSearch {
 
 	public String getXMLDataForItemId(String itemId) {
 		// TODO: Your code here!
-       ///DbManager db = new DbManager();
-       /*
-        Connection conn = DbManager.getConnection(true);
-        Statement s = conn.createStatement();
+        String ret="";
+        try {
+            Connection conn = DbManager.getConnection(true);
+            Statement s = conn.createStatement();
 
-        ResultSet rs = s.executeQuery("SELECT * FROM Item WHERE item_id ="+itemId);
+            ResultSet rs = s.executeQuery("SELECT * FROM Item WHERE item_id ="+itemId);
 
-        StringBuilder sb = new StringBuilder();
-*/
+            StringBuilder sb = new StringBuilder();
+            sb.append("<Item ItemID = \"").append(rs.getString("item_id")).append("\">\n<Name>");
+        } catch (SQLException e) {
+            System.out.println("ERROR: SQLException "+e.getMessage());
+            System.exit(1);
+      } 
 
-		return "";
+		return ret;
 	}
 	
 	public String echo(String message) {
