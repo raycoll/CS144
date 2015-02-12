@@ -9,7 +9,7 @@ CREATE TABLE Item (
     start_price DECIMAL(8,2),
     num_bids INT UNSIGNED NOT NULL,
     latitude DECIMAL(9,6),
-    longitude DECIMAL(9,6)
+    longitude DECIMAL(9,6),
     location VARCHAR(100),
     country VARCHAR(100),
     started TIMESTAMP,
