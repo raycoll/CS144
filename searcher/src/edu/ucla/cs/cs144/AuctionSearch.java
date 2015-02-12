@@ -127,35 +127,34 @@ public class AuctionSearch implements IAuctionSearch {
         ResultSet rs;
         int size;
         SearchResult[] res= new SearchResult[0];
-      try{
-        conn = DbManager.getConnection(true);
-        s = conn.createStatement();
+        ArrayList<SearchResult> sr= new ArrayList<SearchResult>();
+        try{
 
-        double minx = region.getLx();
-        double miny = region.getLy();
-        double maxx = region.getRx();
-        double maxy = region.getRy();
+            conn = DbManager.getConnection(true);
+            s = conn.createStatement();
 
-        rs = s.executeQuery("SELECT item_id FROM Location WHERE MBRCONTAINS(GeomFromText(\'Polygon(("+minx+" "+miny+", "+maxx+" "+miny
-            +", "+maxx+" "+maxy+", "+minx+" "+maxy+", "+minx+" "+miny+"))\'), g) =1;");
-        size =rs.getFetchSize();
+            double minx = region.getLx();
+            double miny = region.getLy();
+            double maxx = region.getRx();
+            double maxy = region.getRy();
 
-        if(size > 0) {
-            res = new SearchResult[size];
-            int i =0;
+            rs = s.executeQuery("SELECT item_id FROM Location WHERE MBRCONTAINS(GeomFromText(\'Polygon(("+minx+" "+miny+", "+maxx+" "+miny
+            +", "+maxx+" "+maxy+", "+minx+" "+maxy+", "+minx+" "+miny+"))\'), g)=1");
+
             while(rs.next()) {
-                res[i]=new SearchResult();
-                res[i].setItemId(rs.getString("item_id"));
-                i++;
+                SearchResult currsr = new SearchResult();
+                currsr.setItemId(rs.getString("item_id"));
+                sr.add(currsr);
             }
-        }
-      }catch (SQLException e) {
+            rs.close();
+            s.close();
+            conn.close();
+
+        }catch (SQLException e) {
             System.out.println("ERROR: SQLException "+e.getMessage());
             System.exit(1);
-      }
-      return res;
-      
-
+        }
+        return sr.toArray(new SearchResult[sr.size()]);
     }
         
 	public SearchResult[] spatialSearch(String query, SearchRegion region,
@@ -215,7 +214,19 @@ public class AuctionSearch implements IAuctionSearch {
             ResultSet rs = s.executeQuery("SELECT * FROM Item WHERE item_id ="+itemId);
 
             StringBuilder sb = new StringBuilder();
-            sb.append("<Item ItemID = \"").append(rs.getString("item_id")).append("\">\n<Name>");
+            while(rs.next()) {
+                sb.append("<Item ItemID = \"").append(rs.getString("item_id"));
+                sb.append("\">\n<Name>").append(rs.getString("name")).append("</Name>\n");
+
+                ResultSet cat_rs = s.executeQuery("SELECT category FROM ItemCategory WHERE item_id="+itemId);
+                while(cat_rs.next()) {
+                    
+                }
+
+            }
+            rs.close();
+            s.close();
+            conn.close();
         } catch (SQLException e) {
             System.out.println("ERROR: SQLException "+e.getMessage());
             System.exit(1);
