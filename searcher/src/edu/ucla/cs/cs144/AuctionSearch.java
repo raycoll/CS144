@@ -121,26 +121,39 @@ public class AuctionSearch implements IAuctionSearch {
     /** Returns a list of item_ids from the mysql database 
       * that are in the given region 
       */
-    private SearchResult[] getItemsInRegion(SearchRegion region) throws SQLException{
+    private SearchResult[] getItemsInRegion(SearchRegion region){
+        Statement s;
+        Connection conn;
+        ResultSet rs;
+        int size;
+        SearchResult[] res=null;
+      try{
+        conn = DbManager.getConnection(true);
+        s = conn.createStatement();
 
-        Connection conn = DbManager.getConnection(true);
-        Statement s = conn.createStatement();
         double minx = region.getLx();
         double miny = region.getLy();
         double maxx = region.getRx();
         double maxy = region.getRy();
 
-        ResultSet rs = s.executeQuery("SELECT item_id FROM Location WHERE MBRCONTAINS(GeomFromText('Polygon(("+minx+" "
-            +miny+", "+maxx+" "+miny+", "+maxx+" "+maxy+", "+minx+" "maxy+", "+minx+" "+miny+"))'), g) =1;"
-        
-        SearchResult[] res = new SearchResult[rs.getFetchSize()];
+        rs = s.executeQuery("SELECT item_id FROM Location WHERE MBRCONTAINS(GeomFromText(\'Polygon(("+minx+" "+miny+", "+maxx+" "+miny
+            +", "+maxx+" "+maxy+", "+minx+" "+maxy+", "+minx+" "+miny+"))\'), g) =1;");
+        size =rs.getFetchSize();
+
+        res = new SearchResult[size];
         int i =0;
         while(rs.next()) {
             res[i]=new SearchResult();
             res[i].setItemId(rs.getString("item_id"));
             i++;
         }
-        return res;
+      }catch (SQLException e) {
+                System.out.println("ERROR: SQLException "+e.getMessage());
+                System.exit(1);
+      }
+      return res;
+      
+
     }
         
 	public SearchResult[] spatialSearch(String query, SearchRegion region,
