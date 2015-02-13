@@ -262,7 +262,7 @@ public class AuctionSearch implements IAuctionSearch {
                 } else { //NEED TO TEST BID XML DATA
                     sb.append("<Bids>\n");
 
-                    ResultSet bid_rs = bid_s.executeQuery("SELECT * as currently FROM Bid WHERE item_id="+itemId);
+                    ResultSet bid_rs = bid_s.executeQuery("SELECT * FROM Bid WHERE item_id="+itemId);
                     Statement usr_s = conn.createStatement();
                     while(bid_rs.next()){
                     
@@ -322,7 +322,8 @@ public class AuctionSearch implements IAuctionSearch {
                 
                 String seller = rs.getString("seller_id");
                 Statement usr2_s = conn.createStatement();
-                System.out.println("SELECT * FROM AuctionUser WHERE user_id="+seller);
+
+                
                 ResultSet slr_rs = usr2_s.executeQuery("SELECT * FROM AuctionUser WHERE user_id=\'"+seller+"\'");
                 if(slr_rs.next()) { 
                     sb.append("<Seller Rating=\"").append(slr_rs.getString("sell_rating")).append("\" UserID=\"")
