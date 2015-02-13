@@ -8,6 +8,7 @@ import java.util.Iterator;
 import java.util.ArrayList;
 import java.util.List;
 import java.text.SimpleDateFormat;
+import java.sql.PreparedStatement;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -139,6 +140,21 @@ public class AuctionSearch implements IAuctionSearch {
             double maxx = region.getRx();
             double maxy = region.getRy();
 
+            //Failed to do prepared statement for this quary
+            /*String query="SELECT item_id FROM Location WHERE MBRCONTAINS(GeomFromText(\'Polygon((? ?, ? ?, ? ?, ? ?, ? ?))\'), g)=1";
+            PreparedStatement ps = conn.prepareStatement(query);
+            ps.setDouble(1,minx);
+            ps.setDouble(2,miny);
+            ps.setDouble(3,maxx);
+            ps.setDouble(4,miny);
+            ps.setDouble(5,maxx);
+            ps.setDouble(6,maxy);
+            ps.setDouble(7,minx);
+            ps.setDouble(8,maxy);
+            ps.setDouble(9,minx);
+            ps.setDouble(10,miny);
+            ResultSet rs = ps.executeQuery();*/
+
             rs = s.executeQuery("SELECT item_id FROM Location WHERE MBRCONTAINS(GeomFromText(\'Polygon(("+minx+" "+miny+", "+maxx+" "+miny
             +", "+maxx+" "+maxy+", "+minx+" "+maxy+", "+minx+" "+miny+"))\'), g)=1");
 
@@ -210,8 +226,7 @@ public class AuctionSearch implements IAuctionSearch {
     }
 
 	public String getXMLDataForItemId(String itemId) {
-		// TODO: Your code here!
-        //String ret="";
+	
         StringBuilder sb = new StringBuilder();
         SimpleDateFormat sqlFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         SimpleDateFormat xmlFormat = new SimpleDateFormat("MMM-dd-yy HH:mm:ss");
@@ -219,24 +234,34 @@ public class AuctionSearch implements IAuctionSearch {
         try {
             Connection conn = DbManager.getConnection(true);
 
-            Statement s = conn.createStatement();
-            ResultSet rs = s.executeQuery("SELECT * FROM Item WHERE item_id ="+itemId);
+            String query="SELECT * FROM Item WHERE item_id =?";
+            PreparedStatement ps = conn.prepareStatement(query);
+            ps.setInt(1,Integer.valueOf(itemId));
+
+            ResultSet rs = ps.executeQuery();
 
             while(rs.next()) {
                 sb.append("<Item ItemID=\"").append(rs.getString("item_id"));
                 sb.append("\">\n<Name>").append(escXMLChar(rs.getString("name"))).append("</Name>\n");
 
-                Statement cat_s = conn.createStatement();
-                ResultSet cat_rs = cat_s.executeQuery("SELECT category FROM ItemCategory WHERE item_id="+itemId);
+                String cat_query="SELECT category FROM ItemCategory WHERE item_id=?";
+                PreparedStatement cat_ps = conn.prepareStatement(cat_query);
+                cat_ps.setInt(1,Integer.valueOf(itemId));
+
+                ResultSet cat_rs = cat_ps.executeQuery();
+
                 while(cat_rs.next()) {
                     sb.append("<Category>").append(escXMLChar(cat_rs.getString("category"))).append("</Category>\n");
                 }
 
                 cat_rs.close();
-                cat_s.close();
+                cat_ps.close();
 
-                Statement bid_s = conn.createStatement();
-                ResultSet max_rs = bid_s.executeQuery("SELECT MAX(amount) as currently FROM Bid WHERE item_id="+itemId);
+                String max_query="SELECT MAX(amount) as currently FROM Bid WHERE item_id=?";
+                PreparedStatement max_ps = conn.prepareStatement(max_query);
+                max_ps.setInt(1,Integer.valueOf(itemId));
+                ResultSet max_rs = max_ps.executeQuery();
+
 
                 while(max_rs.next()){
                     sb.append("<Currently>$");
@@ -260,26 +285,36 @@ public class AuctionSearch implements IAuctionSearch {
 
                 if(num_bids.equals("0")) { //No bids so just attach one tag
                     sb.append("<Bids />\n");
-                } else { //NEED TO TEST BID XML DATA
+                } else { 
                     sb.append("<Bids>\n");
 
-                    ResultSet bid_rs = bid_s.executeQuery("SELECT * FROM Bid WHERE item_id="+itemId);
-                    Statement usr_s = conn.createStatement();
+                    String bid_query="SELECT * FROM Bid WHERE item_id=?";
+                    PreparedStatement bid_ps = conn.prepareStatement(bid_query);
+                    bid_ps.setInt(1,Integer.valueOf(itemId));
+                    ResultSet bid_rs = bid_ps.executeQuery();
+
+                    //Statement usr_s = conn.createStatement();
                     while(bid_rs.next()){
                     
                         String bidder = bid_rs.getString("user_id");
                         sb.append("<Bid>\n");
 
-                        ResultSet usr_rs = usr_s.executeQuery("SELECT * FROM AuctionUser WHERE user_id=\'"+bidder+"\'");
-                        if(usr_rs.next()) { 
-                            sb.append("<Bidder Rating=\"").append(usr_rs.getString("buy_rating")).append("\" User=\"")
+                        String bdr_query="SELECT * FROM AuctionUser WHERE user_id=?";
+                        PreparedStatement bdr_ps = conn.prepareStatement(bdr_query);
+                        bdr_ps.setString(1,bidder);
+                        ResultSet bdr_rs = bdr_ps.executeQuery();
+
+                        //ResultSet bdr_rs = usr_s.executeQuery("SELECT * FROM AuctionUser WHERE user_id=\'"+bidder+"\'");
+                        if(bdr_rs.next()) { 
+                            sb.append("<Bidder Rating=\"").append(bdr_rs.getString("buy_rating")).append("\" User=\"")
                                 .append(bidder).append("\">\n");
-                            sb.append("<Location>").append(escXMLChar(usr_rs.getString("location"))).append("</Location>\n");
-                            sb.append("<Country>").append(escXMLChar(usr_rs.getString("country"))).append("</Country>\n");
+                            sb.append("<Location>").append(escXMLChar(bdr_rs.getString("location"))).append("</Location>\n");
+                            sb.append("<Country>").append(escXMLChar(bdr_rs.getString("country"))).append("</Country>\n");
 
                             sb.append("</Bidder>\n");
                         }
-                        usr_rs.close();
+                        bdr_rs.close();
+                        bdr_ps.close();
                         try{
                             Date bidTime = sqlFormat.parse(bid_rs.getString("time"));
                             sb.append("<Time>").append(xmlFormat.format(bidTime)).append("</Time>\n");
@@ -294,12 +329,9 @@ public class AuctionSearch implements IAuctionSearch {
                     sb.append("</Bids>\n");
 
                     bid_rs.close();
-                    usr_s.close();
-                    bid_s.close();
+                    //usr_s.close();
+                    bid_ps.close();
                 }
-                
-
-
                             
                 if(rs.getString("latitude")==null && rs.getString("longitude")==null) {
                     sb.append("<Location>");
@@ -322,17 +354,19 @@ public class AuctionSearch implements IAuctionSearch {
 
                 
                 String seller = rs.getString("seller_id");
-                Statement usr2_s = conn.createStatement();
 
-                
-                ResultSet slr_rs = usr2_s.executeQuery("SELECT * FROM AuctionUser WHERE user_id=\'"+seller+"\'");
+                String slr_query="SELECT * FROM AuctionUser WHERE user_id=?";
+                PreparedStatement slr_ps = conn.prepareStatement(slr_query);
+                slr_ps.setString(1,seller);
+                ResultSet slr_rs = slr_ps.executeQuery();
+
                 if(slr_rs.next()) { 
                     sb.append("<Seller Rating=\"").append(slr_rs.getString("sell_rating")).append("\" UserID=\"")
                         .append(seller).append("\" />\n");
                 }
                 
                 slr_rs.close();
-                usr2_s.close();
+                slr_ps.close();
 
                 if(rs.getString("description").equals("")){
                      sb.append("<Description />\n");
@@ -348,7 +382,7 @@ public class AuctionSearch implements IAuctionSearch {
             System.exit(1);
         } 
 
-	   return  sb.toString();
+	   return sb.toString();
 	}
 	
 	public String echo(String message) {
