@@ -14,7 +14,7 @@ CREATE TABLE Item (
     country VARCHAR(100),
     started TIMESTAMP,
     ends TIMESTAMP,
-    seller_id INT UNSIGNED NOT NULL,
+    seller_id VARCHAR(100) NOT NULL,
     description VARCHAR(4000)
 ) COLLATE utf8_bin;
 

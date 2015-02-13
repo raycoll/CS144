@@ -21,7 +21,7 @@ import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.lucene.queryparser.classic.ParseException;
-import org.apache.lucene.queryparser.classic.ParseException;
+//import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.search.ScoreDoc;
@@ -33,6 +33,7 @@ import org.apache.lucene.util.Version;
 import edu.ucla.cs.cs144.DbManager;
 import edu.ucla.cs.cs144.SearchRegion;
 import edu.ucla.cs.cs144.SearchResult;
+
 
 public class AuctionSearch implements IAuctionSearch {
     IndexSearcher searcher;
@@ -203,36 +204,148 @@ public class AuctionSearch implements IAuctionSearch {
 
         return output;
 	}
+    public String escXMLChar(String s) {
+        return s.replace("\"","\\\"").replace("\'", "&apos;").replace("&","&amp;").replace("<","&lt;")
+        .replace(">","&gt;").replace("\\", "\\\\");
+    }
 
 	public String getXMLDataForItemId(String itemId) {
 		// TODO: Your code here!
-        String ret="";
+        //String ret="";
+        StringBuilder sb = new StringBuilder();
+        SimpleDateFormat sqlFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat xmlFormat = new SimpleDateFormat("MMM-dd-yy HH:mm:ss");
+
         try {
             Connection conn = DbManager.getConnection(true);
-            Statement s = conn.createStatement();
 
+            Statement s = conn.createStatement();
             ResultSet rs = s.executeQuery("SELECT * FROM Item WHERE item_id ="+itemId);
 
-            StringBuilder sb = new StringBuilder();
             while(rs.next()) {
-                sb.append("<Item ItemID = \"").append(rs.getString("item_id"));
-                sb.append("\">\n<Name>").append(rs.getString("name")).append("</Name>\n");
+                sb.append("<Item ItemID=\"").append(rs.getString("item_id"));
+                sb.append("\">\n<Name>").append(escXMLChar(rs.getString("name"))).append("</Name>\n");
 
-                ResultSet cat_rs = s.executeQuery("SELECT category FROM ItemCategory WHERE item_id="+itemId);
+                Statement cat_s = conn.createStatement();
+                ResultSet cat_rs = cat_s.executeQuery("SELECT category FROM ItemCategory WHERE item_id="+itemId);
                 while(cat_rs.next()) {
-                    
+                    sb.append("<Category>").append(escXMLChar(cat_rs.getString("category"))).append("</Category>\n");
                 }
 
-            }
-            rs.close();
-            s.close();
-            conn.close();
+                cat_rs.close();
+                cat_s.close();
+
+                Statement bid_s = conn.createStatement();
+                ResultSet max_rs = bid_s.executeQuery("SELECT MAX(amount) as currently FROM Bid WHERE item_id="+itemId);
+
+                while(max_rs.next()){
+                    sb.append("<Currently>$");
+                    if(max_rs.getString("currently")==null) {
+                        sb.append(rs.getString("start_price"));
+                    } else {
+                        sb.append(max_rs.getString("currently"));
+                    }
+                    sb.append("</Currently>\n");
+                }
+                max_rs.close();
+
+                sb.append("<First_Bid>$").append(rs.getString("start_price")).append("</First_Bid>\n");
+                if(rs.getString("buyprice")!=null) {
+                    sb.append("<Buy_Price>$").append(rs.getString("buyprice")).append("</Buy_Price>\n");
+                }
+
+                String num_bids = rs.getString("num_bids");
+                sb.append("<Number_of_Bids>").append(num_bids).append("</Number_of_Bids>\n");
+
+                if(num_bids.equals("0")) { //No bids so just attach one tag
+                    sb.append("<Bids />\n");
+                } else { //NEED TO TEST BID XML DATA
+                    sb.append("<Bids>\n");
+
+                    ResultSet bid_rs = bid_s.executeQuery("SELECT * as currently FROM Bid WHERE item_id="+itemId);
+                    Statement usr_s = conn.createStatement();
+                    while(bid_rs.next()){
+                    
+                        String bidder = bid_rs.getString("user_id");
+                        sb.append("<Bid>\n");
+
+                        ResultSet usr_rs = usr_s.executeQuery("SELECT * FROM AuctionUser WHERE user_id=\'"+bidder+"\'");
+                        if(usr_rs.next()) { 
+                            sb.append("<Bidder Rating=\"").append(usr_rs.getString("buy_rating")).append("\" User=\"")
+                                .append(bidder).append("\">\n");
+                            sb.append("<Location>").append(escXMLChar(usr_rs.getString("location"))).append("</Location>\n");
+                            sb.append("<Country>").append(escXMLChar(usr_rs.getString("country"))).append("</Country>\n");
+
+                            sb.append("</Bidder>\n");
+                        }
+                        usr_rs.close();
+                        try{
+                            Date bidTime = sqlFormat.parse(bid_rs.getString("time"));
+                            sb.append("<Time>").append(xmlFormat.format(bidTime)).append("</Time>\n");
+                        } catch (java.text.ParseException e){
+                            System.out.println("ERROR: Cannot parse date");
+                        }
+                            
+
+                        sb.append("<Amount>$").append(bid_rs.getString("amount")).append("</Amount>\n")
+                            .append("</Bid>\n");
+                    }
+                    sb.append("</Bids>\n");
+
+                    bid_rs.close();
+                    usr_s.close();
+                    bid_s.close();
+                }
+                
+
+
+                            
+                if(rs.getString("latitude")==null && rs.getString("longitude")==null) {
+                    sb.append("<Location>");
+                } else{
+                    sb.append("<Location Latitude=\"").append(rs.getString("latitude")).append("\" Longitude=\"")
+                        .append(rs.getString("longitude")).append("\">\n");
+                }
+
+                sb.append(escXMLChar(rs.getString("location"))).append("</Location>\n");
+                sb.append("<Country>").append(escXMLChar(rs.getString("country"))).append("</Country>\n");
+
+                try{             
+                    Date started = sqlFormat.parse(rs.getString("started"));
+                    Date ends = sqlFormat.parse(rs.getString("ends"));
+                    sb.append("<Started>").append(xmlFormat.format(started)).append("</Started>\n");
+                    sb.append("<Ends>").append(xmlFormat.format(ends)).append("</Ends>\n");
+                } catch (java.text.ParseException e){
+                    System.out.println("ERROR: Cannot parse date");
+                }
+
+                
+try{
+                String seller = rs.getString("seller_id");
+                Statement usr2_s = conn.createStatement();
+                System.out.println("SELECT * FROM AuctionUser WHERE user_id="+seller);
+                ResultSet slr_rs = usr2_s.executeQuery("SELECT * FROM AuctionUser WHERE user_id=\'"+seller+"\'");
+                if(slr_rs.next()) { 
+                    sb.append("<Seller Rating=\"").append(slr_rs.getString("sell_rating")).append("\" UserID=\"")
+                        .append(seller).append("\" />\n");
+                }
+                
+                slr_rs.close();
+                usr2_s.close();
+} catch (SQLException e){
+    System.out.println("Error AT SELLER " +e.getMessage());
+}
+                sb.append("<Description>").append(rs.getString("description")).append("<Description>\n");
+                sb.append("</Item>");
+                
+
+            }//end while(rs.next())
         } catch (SQLException e) {
             System.out.println("ERROR: SQLException "+e.getMessage());
             System.exit(1);
-      } 
+        } 
 
-		return ret;
+	   return  sb.toString();
 	}
 	
 	public String echo(String message) {
