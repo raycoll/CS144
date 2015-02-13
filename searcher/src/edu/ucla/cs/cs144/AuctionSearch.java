@@ -205,8 +205,8 @@ public class AuctionSearch implements IAuctionSearch {
         return output;
 	}
     public String escXMLChar(String s) {
-        return s.replace("\"","\\\"").replace("\'", "&apos;").replace("&","&amp;").replace("<","&lt;")
-        .replace(">","&gt;").replace("\\", "\\\\");
+        return s.replace("\\", "\\\\").replace("\"","\\\"").replace("&","&amp;").replace("\'", "&apos;").replace("<","&lt;")
+        .replace(">","&gt;");
     }
 
 	public String getXMLDataForItemId(String itemId) {
@@ -249,10 +249,11 @@ public class AuctionSearch implements IAuctionSearch {
                 }
                 max_rs.close();
 
-                sb.append("<First_Bid>$").append(rs.getString("start_price")).append("</First_Bid>\n");
                 if(rs.getString("buyprice")!=null) {
                     sb.append("<Buy_Price>$").append(rs.getString("buyprice")).append("</Buy_Price>\n");
                 }
+                sb.append("<First_Bid>$").append(rs.getString("start_price")).append("</First_Bid>\n");
+                
 
                 String num_bids = rs.getString("num_bids");
                 sb.append("<Number_of_Bids>").append(num_bids).append("</Number_of_Bids>\n");
@@ -336,7 +337,7 @@ public class AuctionSearch implements IAuctionSearch {
                 if(rs.getString("description").equals("")){
                      sb.append("<Description />\n");
                 } else {
-                    sb.append("<Description>").append(rs.getString("description")).append("</Description>\n");
+                    sb.append("<Description>").append(escXMLChar(rs.getString("description"))).append("</Description>\n");
                 }
                 sb.append("</Item>");
                 
