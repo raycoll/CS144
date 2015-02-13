@@ -320,7 +320,6 @@ public class AuctionSearch implements IAuctionSearch {
                 }
 
                 
-try{
                 String seller = rs.getString("seller_id");
                 Statement usr2_s = conn.createStatement();
                 System.out.println("SELECT * FROM AuctionUser WHERE user_id="+seller);
@@ -332,10 +331,12 @@ try{
                 
                 slr_rs.close();
                 usr2_s.close();
-} catch (SQLException e){
-    System.out.println("Error AT SELLER " +e.getMessage());
-}
-                sb.append("<Description>").append(rs.getString("description")).append("<Description>\n");
+
+                if(rs.getString("description").equals("")){
+                     sb.append("<Description />\n");
+                } else {
+                    sb.append("<Description>").append(rs.getString("description")).append("</Description>\n");
+                }
                 sb.append("</Item>");
                 
 
