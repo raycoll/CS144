@@ -57,7 +57,7 @@ function initialize(lat, long, loc) {
     String currentBid = ib.getCurrentBid();
     String firstBid = ib.getFirstBid();
     String numBids = ib.getNumBids();
-    /*String buyPrice= ib.getBuyPrice();*/
+    String buyPrice= ib.getBuyPrice();
     Bid[] bids = ib.getBids();
     String latitude = ib.getLatitude();
     String longitude = ib.getLongitude();
@@ -68,7 +68,7 @@ function initialize(lat, long, loc) {
     String sellerRating = ib.getSellerRating();
     String sellerId = ib.getSellerId();
     String description = ib.getDescription();
-    String buyPrice = ib.getBuyPrice();
+
 %>
 <title>Stevia's Site: itemID <%= id%></title>
 </head>
@@ -99,6 +99,10 @@ function initialize(lat, long, loc) {
   <% 
   } else { %>
       bids ]</p>
+  <% } 
+
+  if(buyPrice != null) { %>
+    <p>Buy Price: <%= buyPrice%></p>
   <% } %>
 
   <p>Location: <%= location%>, <%= country%>
