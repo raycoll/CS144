@@ -36,9 +36,8 @@
 		<%	} else {
 				
 					String prevSkip = Integer.toString(numSkip - numPerPage);
-					String prevReturn= Integer.toString(numReturn + numPerPage);
 				%>
-				<a href="/eBay/search?q=<%= q%>&numResultsToSkip=<%= prevSkip%>&numResultsToReturn=<%= prevReturn%>">Previous</a>
+				<a href="/eBay/search?q=<%= q%>&numResultsToSkip=<%= prevSkip%>&numResultsToReturn=<%= numResultsToReturn%>">Previous</a>
 				
 		<%
 			}
@@ -48,9 +47,8 @@
 			<%} else {
 			
 				String nextSkip = Integer.toString(numSkip + numPerPage);
-				String nextReturn= Integer.toString(numReturn - numPerPage);
 			%>
-				<a href="/eBay/search?q=<%= q%>&numResultsToSkip=<%= nextSkip%>&numResultsToReturn=<%= nextReturn%>">Next</a></br>
+				<a href="/eBay/search?q=<%= q%>&numResultsToSkip=<%= nextSkip%>&numResultsToReturn=<%= numResultsToReturn%>">Next</a></br>
 		<%
 			}
 		
