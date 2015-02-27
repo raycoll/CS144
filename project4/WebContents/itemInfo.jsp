@@ -52,7 +52,6 @@
 </head>
 <body onload="initialize(<%= latitude %>, <%= longitude %>)"> 
 
-<div id="map_canvas" style="width:100%; height:100%"></div> 
 
   <form action="http://localhost:1448/eBay/item" method="get">
     ItemID: <input type="text" name="id" value="<%= id%>"><br>
