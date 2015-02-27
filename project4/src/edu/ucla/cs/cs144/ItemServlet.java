@@ -76,9 +76,15 @@ public class ItemServlet extends HttpServlet implements Servlet {
         // add seller rating and id
         Element seller = (Element) item.getElementsByTagName("Seller").item(0);
         ib.setSellerRating(seller.getAttribute("Rating"));
-        ib.setSellerId(seller.getAttribute("UserId"));
+        ib.setSellerId(seller.getAttribute("UserID"));
         // add description
         ib.setDescription(item.getElementsByTagName("Description").item(0).getFirstChild().getNodeValue());
+        
+        // add buy price
+        NodeList buyPrice = item.getElementsByTagName("Buy_Price");
+        if (buyPrice.getLength() != 0) {
+            ib.setBuyPrice(buyPrice.item(0).getFirstChild().getNodeValue());
+        }
         } catch(Exception e) {
             System.out.println("Failed to parse!");
             ib.setId(e.toString());

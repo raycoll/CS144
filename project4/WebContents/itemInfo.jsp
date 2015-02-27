@@ -67,6 +67,7 @@ function initialize(lat, long, loc) {
     String sellerRating = ib.getSellerRating();
     String sellerId = ib.getSellerId();
     String description = ib.getDescription();
+    String buyPrice = ib.getBuyPrice();
 %>
 </head>
 <body onload="initialize(<%= latitude %>, <%= longitude %>, '<%= country %>')"> 
