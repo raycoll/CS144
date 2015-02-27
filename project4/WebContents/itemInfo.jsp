@@ -6,8 +6,8 @@
 <head> 
 <meta name="viewport" content="initial-scale=1.0, user-scalable=no" /> 
 <style type="text/css"> 
-  html { height: 100% } 
-    body { height: 50%; margin: 0px; padding: 0px } 
+      html { height: 100% } 
+      body { height: 50%; margin: 0px; padding: 0px } 
       #map_canvas { height: 50% } 
 </style> 
 <script type="text/javascript" 
@@ -38,6 +38,7 @@
     String currentBid = ib.getCurrentBid();
     String firstBid = ib.getFirstBid();
     String numBids = ib.getNumBids();
+    /*String buyPrice= ib.getBuyPrice();*/
     Bid[] bids = ib.getBids();
     String latitude = ib.getLatitude();
     String longitude = ib.getLongitude();
@@ -49,26 +50,45 @@
     String sellerId = ib.getSellerId();
     String description = ib.getDescription();
 %>
+<title>Stevia's Site: itemID <%= id%></title>
 </head>
 <body onload="initialize(<%= latitude %>, <%= longitude %>)"> 
-
 
   <form action="http://localhost:1448/eBay/item" method="get">
     ItemID: <input type="text" name="id" value="<%= id%>"><br>
     <input type="submit" value="Submit">
   </form>
-  <h1><%= name%></h1>
-  <p>Sale ends at: <%= ends%></p>
-  <p>Current bid: <%=currentBid %> [ <%= numBids%> 
-    <% if(numBids.equals("1")) {
-    %>
-        bid ]</p>
-    <% 
-    } else {%>
-        bids ]</p>
-    <% }%>
 
-    <%= description %><br><br>
+  <h1><%= name%></h1>
+
+  <p>Listed in category: 
+  <%for(String cat : categories) {%>
+    <%= cat%>, 
+  <% } %>
+  </p>
+
+  <p>Sale starts at: <%= started%></p>
+  <p>Sale ends at: <%= ends%></p>
+
+
+  <p>Starting bid: <%= firstBid%></p>
+
+  <p>Current bid: <%=currentBid %> [ <%= numBids%> 
+  <% if(numBids.equals("1")) { %>
+      bid ]</p>
+  <% 
+  } else { %>
+      bids ]</p>
+  <% } %>
+
+  <p>Location: <%= location%>, <%= country%>
+  <% if(!longitude.equals("NULL")) {%>
+    (<%= latitude%>, <%= longitude%> )
+  <% } %>
+  </p>
+  <p>Seller: <%= sellerId%> (<%= sellerRating%>)</p>
+  <%= description %><br><br>
+
 <div id="map_canvas" style="width:100%; height:100%"></div>
 </body>
 
