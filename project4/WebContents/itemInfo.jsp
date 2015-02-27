@@ -24,6 +24,21 @@
     String sellerId = ib.getSellerId();
     String description = ib.getDescription();
 %>
+  <form action="http://localhost:1448/eBay/item" method="get">
+    ItemID: <input type="text" name="id" value="<%= id%>"><br>
+    <input type="submit" value="Submit">
+  </form>
+  <h1><%= name%></h1>
+  <p>Sale ends at: <%= ends%></p>
+  <p>Current bid: <%=currentBid %> [ <%= numBids%> 
+    <% if(numBids.equals("1")) {
+    %>
+        bid ]</p>
+    <% 
+    } else {%>
+        bids ]</p>
+    <% }%>
+
 <%= description %>
 </body>
 
