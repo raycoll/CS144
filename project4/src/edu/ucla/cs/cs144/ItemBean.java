@@ -18,7 +18,7 @@ public class ItemBean {
     String srat;
     String sid;
     String desc;
-
+    String bprice;
     ItemBean() { cats = new ArrayList<String>(); bids = new ArrayList<Bid>();}
 
     public void setId(String i) {id = i;}
@@ -37,7 +37,7 @@ public class ItemBean {
     public void setSellerRating(String i) {srat = i;}
     public void setSellerId(String i) {sid = i;}
     public void setDescription(String i) {desc = i;}
-
+    public void setBuyPrice(String i) {bprice = i;}
 
     public String getId() {return id; }
     public String getName() {return name; } 
@@ -55,6 +55,6 @@ public class ItemBean {
     public String getSellerRating() {return srat; } 
     public String getSellerId() {return sid; }
     public String getDescription() {return desc; }  
-
+    public String getBuyPrice() {return bprice;}
 }
 
