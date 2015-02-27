@@ -13,21 +13,40 @@
 <script type="text/javascript" 
     src="http://maps.google.com/maps/api/js?sensor=false"> 
 </script> 
-<script type="text/javascript"> 
-  function initialize(lat, long) {
-      if (!lat || !long) {
-         return;
-      } 
-    var latlng = new google.maps.LatLng(lat,long); 
+<script type="text/javascript">
+function getMap(latlng) {
     var myOptions = { 
-        zoom: 14, // default is 8  
+        zoom: 10, // default is 8  
         center: latlng, 
         mapTypeId: google.maps.MapTypeId.ROADMAP 
      }; 
     var map = new google.maps.Map(document.getElementById("map_canvas"), 
                                   myOptions); 
-     
-  } 
+}
+
+function getLatLng(loc) {
+    var geocoder = new google.maps.Geocoder();
+    geocoder.geocode( { 'address': loc}, function(results, status) {
+            if (status == google.maps.GeocoderStatus.OK) {
+                var myOptions = { 
+                    zoom: 4, // default is 8  
+                    center: results[0].geometry.location,
+                    mapTypeId: google.maps.MapTypeId.ROADMAP 
+                }; 
+                var map = new google.maps.Map(document.getElementById("map_canvas"), 
+                                  myOptions);            
+            }
+    });
+}
+function initialize(lat, long, loc) {
+      if (!lat || !long) {
+         getLatLng(loc);
+      }
+      else {
+        var latlng = new google.maps.LatLng(lat,long);
+        getMap(latlng);      
+      }
+} 
 
 </script> 
 <%
@@ -50,7 +69,7 @@
     String description = ib.getDescription();
 %>
 </head>
-<body onload="initialize(<%= latitude %>, <%= longitude %>)"> 
+<body onload="initialize(<%= latitude %>, <%= longitude %>, '<%= country %>')"> 
 
 
   <form action="http://localhost:1448/eBay/item" method="get">
