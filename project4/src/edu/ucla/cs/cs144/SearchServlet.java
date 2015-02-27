@@ -6,15 +6,14 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import edu.ucla.cs.cs144.AuctionSearchClient;
 
 public class SearchServlet extends HttpServlet implements Servlet {
-	//http://localhost:1448/eBay/search?q=superman&numResultsToSkip=0&numResultsToReturn=20
        
     public SearchServlet() {}
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
     {
-        //ServletContext context = getServletContext();
 
         String q = request.getParameter("q");
         String numResultsToSkip= request.getParameter("numResultsToSkip");
