@@ -56,6 +56,7 @@
 </script> 
 <script type="text/javascript">
 function getMap(latlng) {
+
     var myOptions = { 
         zoom: 10, // default is 8  
         center: latlng, 
@@ -69,19 +70,26 @@ function getLatLng(loc) {
     var geocoder = new google.maps.Geocoder();
     geocoder.geocode( { 'address': loc}, function(results, status) {
             if (status == google.maps.GeocoderStatus.OK) {
-                var myOptions = { 
-                    zoom: 4, // default is 8  
-                    center: results[0].geometry.location,
-                    mapTypeId: google.maps.MapTypeId.ROADMAP 
-                }; 
-                var map = new google.maps.Map(document.getElementById("map_canvas"), 
-                                  myOptions);            
+                getMap(results[0].geometry.location);            
             }
+            else {
+            var myOptions = {
+                zoom: 3,
+                center: new google.maps.LatLng(36.7500, -119.7667),
+                mapTypeId: google.maps.MapTypeId.ROADMAP
+            };
+           var map = new google.maps.Map(document.getElementById("map_canvas"), 
+                                  myOptions); 
+            }
+
     });
 }
+
+
 function initialize(lat, long, loc) {
       if (!lat || !long) {
          getLatLng(loc);
+        
       }
       else {
         var latlng = new google.maps.LatLng(lat,long);
@@ -113,7 +121,7 @@ function initialize(lat, long, loc) {
 %>
 <title>Stevia's Site: itemID <%= id%></title>
 </head>
-<body onload="initialize(<%= latitude %>, <%= longitude %>, '<%= country %>')"> 
+<body onload="initialize(<%= latitude %>, <%= longitude %>, '<%= location %>')"> 
 <div class="main">
   <form action="http://localhost:1448/eBay/item" method="get">
     ItemID <input class="search" type="text" name="id" value="<%= id%>">
