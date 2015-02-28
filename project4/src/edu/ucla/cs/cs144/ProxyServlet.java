@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.net.URL;
 import java.net.HttpURLConnection;
 import javax.servlet.Servlet;
 import javax.servlet.ServletException;
@@ -22,6 +23,9 @@ public class ProxyServlet extends HttpServlet implements Servlet {
 
        // get query string
        String q = request.getParameter("q");
+       if (q == null) {
+           return;
+       }
        
        // Send query to Google Suggest
        String suggestApiEndpoint = "http://google.com/complete/search?output=toolbar&q=";
