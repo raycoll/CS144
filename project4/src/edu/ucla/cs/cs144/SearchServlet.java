@@ -18,20 +18,24 @@ public class SearchServlet extends HttpServlet implements Servlet {
         String q = request.getParameter("q");
         String numResultsToSkip= request.getParameter("numResultsToSkip");
         String numResultsToReturn= request.getParameter("numResultsToReturn");
-
+        SearchResult[] results = null; 
+        if (q == null || numResultsToSkip == null || numResultsToReturn == null) {
+            request.getRequestDispatcher("./keywordSearch.html").forward(request,response);
+            return;
+        }
+        else {
         Integer intNumResultsToSkip = Integer.parseInt(numResultsToSkip);
         Integer intnumResultsToReturn = Integer.parseInt(numResultsToReturn);
-        
-        //if(q != null){
 
-        	SearchResult[] results= AuctionSearchClient.basicSearch(q, intNumResultsToSkip, intnumResultsToReturn);
-        	request.setAttribute("results", results);
+        results= AuctionSearchClient.basicSearch(q, intNumResultsToSkip, intnumResultsToReturn);
+        }    
+        request.setAttribute("results", results);
         	request.setAttribute("q",q);
         	request.setAttribute("numResultsToSkip", numResultsToSkip);
         	request.setAttribute("numResultsToReturn", numResultsToReturn);
-
+ 
         	request.getRequestDispatcher("./searchResults.jsp").forward(request, response);
-        //}
+
 
 
 
