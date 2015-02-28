@@ -7,8 +7,49 @@
 <meta name="viewport" content="initial-scale=1.0, user-scalable=no" /> 
 <style type="text/css"> 
       html { height: 100% } 
-      body { height: 50%; margin: 0px; padding: 0px } 
-      #map_canvas { height: 50% } 
+      body { 
+        height: 50%;
+        margin: 0px;
+        padding: 0px;
+        background-color:#D6F5FF;
+        font-family:"Helvetica Neue",Helvetica,Arial,Verdana,Sans-serif!important;
+      } 
+      #map_canvas { 
+        height: 50%;
+        border: 1px solid gray;
+      } 
+      .search {
+        width:400px;
+        height:30px;
+        font-size: 16px;
+      }
+
+      .submit {
+        font-size: 16px;
+        height:25px;
+        text-shadow: 0 1px 0 rgba(0,0,0,.2);
+        border-radius: 3px;
+        border: 0;
+        color: #fff;
+        text-shadow: 0 1px 0 rgba(0,0,0,0.17);
+        background-color: #00509d;
+        background-image: -webkit-gradient(linear,left bottom,left top,color-stop(0,#00509d),color-stop(1,#007abd));
+        background-image: -ms-linear-gradient(bottom,#00509d,#007abd);
+        background-image: -moz-linear-gradient(center bottom,#00509d 0,#007abd 100%);
+        background-image: -o-linear-gradient(#007abd,#00509d);
+        background-image: linear-gradient(to top,#00509d,#007abd);
+        filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#007abd',endColorstr='#00509d',GradientType=0);
+        -webkit-box-shadow: 0 2px 0 0 rgba(0,0,0,0.06);
+        -moz-box-shadow: 0 2px 0 0 rgba(0,0,0,0.06);
+        box-shadow: 0 2px 0 0 rgba(0,0,0,0.06);
+      }
+      .main{
+        margin:10px;
+         width: 960px;
+          display: block;
+          margin-left: auto;
+          margin-right: auto;
+      }
 </style> 
 <script type="text/javascript" 
     src="http://maps.google.com/maps/api/js?sensor=false"> 
@@ -73,10 +114,10 @@ function initialize(lat, long, loc) {
 <title>Stevia's Site: itemID <%= id%></title>
 </head>
 <body onload="initialize(<%= latitude %>, <%= longitude %>, '<%= country %>')"> 
-
+<div class="main">
   <form action="http://localhost:1448/eBay/item" method="get">
-    ItemID: <input type="text" name="id" value="<%= id%>"><br>
-    <input type="submit" value="Submit">
+    ItemID <input class="search" type="text" name="id" value="<%= id%>">
+    <input class="submit" type="submit" value="Submit">
   </form>
 
   <h1><%= name%></h1>
@@ -87,18 +128,17 @@ function initialize(lat, long, loc) {
   <% } %>
   </p>
 
-  <p>Sale starts at: <%= started%></p>
-  <p>Sale ends at: <%= ends%></p>
+  <div>Sale started at: <%= started%></div>
+  <div>Sale ends at: <%= ends%></div></br>
 
 
-  <p>Starting bid: <%= firstBid%></p>
-
-  <p>Current bid: <%=currentBid %> [ <%= numBids%> 
+  <div>Starting bid: <%= firstBid%></div>
+  <div>Current bid: <%=currentBid %> [ <%= numBids%> 
   <% if(numBids.equals("1")) { %>
-      bid ]</p>
+      bid ]</div>
   <% 
   } else { %>
-      bids ]</p>
+      bids ]</div>
   <% } 
 
   if(buyPrice != null) { %>
@@ -106,14 +146,15 @@ function initialize(lat, long, loc) {
   <% } %>
 
   <p>Location: <%= location%>, <%= country%>
-  <% if(!longitude.equals("NULL")) {%>
+  <% if(longitude != null) { %>
     (<%= latitude%>, <%= longitude%> )
   <% } %>
   </p>
-  <p>Seller: <%= sellerId%> (<%= sellerRating%>)</p>
-  <%= description %><br><br>
+  <p>Seller: <%= sellerId%> (<%= sellerRating%> &#x2605;)</p>
+  <p>Description: <%= description %></p>
 
 <div id="map_canvas" style="width:100%; height:100%"></div>
+</div>
 </body>
 
 </html>
