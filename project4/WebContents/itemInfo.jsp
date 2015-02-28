@@ -106,7 +106,7 @@ function initialize(lat, long, loc) {
   <% } %>
 
   <p>Location: <%= location%>, <%= country%>
-  <% if(!longitude.equals("NULL")) {%>
+  <% if(longitude != null) {%>
     (<%= latitude%>, <%= longitude%> )
   <% } %>
   </p>
