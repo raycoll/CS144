@@ -12,11 +12,17 @@ public class ItemServlet extends HttpServlet implements Servlet {
     
     private Bid parseBid(Element bid) {
         Bid b = new Bid();
+        if (bid == null) {
+          return b;
+        }
         Element bidder = (Element) bid.getElementsByTagName("Bidder").item(0);
         b.setBidderRating(bidder.getAttribute("Rating"));
         b.setBidderId(bidder.getAttribute("UserID"));
-        b.setBidderLocation(bid.getElementsByTagName("Location").item(0).getFirstChild().getNodeValue());
-        b.setBidderCountry(bid.getElementsByTagName("Country").item(0).getFirstChild().getNodeValue());
+        b.setBidderLocation(bidder.getElementsByTagName("Location").item(0).getFirstChild().getNodeValue());
+        NodeList countryTextNodes = bidder.getElementsByTagName("Country").item(0).getChildNodes();
+        if (countryTextNodes.getLength() != 0) {
+          b.setBidderCountry(countryTextNodes.item(0).getNodeValue());
+        }
         b.setTime(bid.getElementsByTagName("Time").item(0).getFirstChild().getNodeValue());
         b.setAmount(bid.getElementsByTagName("Amount").item(0).getFirstChild().getNodeValue());
         return b;
@@ -88,8 +94,6 @@ public class ItemServlet extends HttpServlet implements Servlet {
             ib.setBuyPrice(buyPrice.item(0).getFirstChild().getNodeValue());
         }
         } catch(Exception e) {
-            System.out.println("Failed to parse!");
-            ib.setId(e.toString());
             return ib;
         }
 
