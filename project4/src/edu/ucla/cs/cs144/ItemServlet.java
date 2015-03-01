@@ -56,7 +56,8 @@ public class ItemServlet extends HttpServlet implements Servlet {
            ib.addBid(b);
         } 
         // add location
-        Element location = (Element) item.getElementsByTagName("Location").item(0);
+        NodeList locations = item.getElementsByTagName("Location");
+        Element location = (Element) locations.item(locations.getLength()-1);
         String latitude = location.getAttribute("Latitude");
         
         if (!latitude.equals("")) {
@@ -105,11 +106,9 @@ public class ItemServlet extends HttpServlet implements Servlet {
         return;
     }
 
-    PrintWriter out	= response.getWriter();	
-    ItemBean ib = getItemBeanFromXml(itemXml);
+   ItemBean ib = getItemBeanFromXml(itemXml);
 	request.setAttribute("info",ib);
     RequestDispatcher rd = request.getRequestDispatcher("./itemInfo.jsp");
 	rd.forward(request,response);
-	
     }
 }
