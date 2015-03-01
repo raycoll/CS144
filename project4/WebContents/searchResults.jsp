@@ -75,7 +75,7 @@
 			Integer numPerPage=10;
 		%>
 		<div class=main>
-		<form action="http://localhost:1448/eBay/search" method="get">
+		<form action="http://104.236.169.138/:8080/eBay/search" method="get">
     		Search <input class="search" type="text" name="q" value="<%= q%>">
     		<input type="hidden" name="numResultsToSkip" value="0">
    			<input type="hidden" name="numResultsToReturn" value="20">

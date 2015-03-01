@@ -52,7 +52,7 @@
 
     <target name="deploy">		
         <delete dir="${env.CATALINA_BASE}/webapps/${war-name}" />
-        <delete dir="${env.CATALINA_BASE}/work/Catalina/localhost/${war-name}" />
+        <delete dir="${env.CATALINA_BASE}/Catalina/localhost/${war-name}" />
         <copy file="${build-dir}/${war-name}.war" todir="${env.CATALINA_BASE}/webapps" preservelastmodified="true" overwrite="true" />
     </target>
 

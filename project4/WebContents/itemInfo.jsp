@@ -123,7 +123,7 @@ function initialize(lat, long, loc) {
 </head>
 <body onload="initialize(<%= latitude %>, <%= longitude %>, '<%= location %>')"> 
 <div class="main">
-  <form action="http://localhost:1448/eBay/item" method="get">
+  <form action="http://104.236.169.138:8080/eBay/item" method="get">
     ItemID <input class="search" type="text" name="id" value="<%= id%>">
     <input class="submit" type="submit" value="Submit">
   </form>
