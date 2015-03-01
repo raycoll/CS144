@@ -360,7 +360,6 @@ AutoSuggestControl.prototype.requestSuggestions = function (oAutoSuggestControl 
         };
         
         oAutoSuggestControl.XMLHttp.send(null);
-        //search for matching states
 
     }
 
