@@ -103,7 +103,7 @@ function initialize(lat, long, loc) {
   <h1><%= name%></h1>
 
   <p>Listed in category: 
-  <%for(String cat : categories) {%>
+  <%for(String cat : categories) { %>
     <%= cat%>, 
   <% } %>
   </p>
@@ -121,11 +121,43 @@ function initialize(lat, long, loc) {
       bids ]</div>
   <% } 
 
+  if(!numBids.equals("0")) {
+  %>
+
+  <table border="0" cellspacing="0" cellpadding="5">
+    <tbody>
+      <th>Bidder</th>
+      <th>Amount</th>
+      <th>Time</th>
+      <th>Location</th>
+      <%
+        for(Bid bid : bids){
+      %>
+        <tr>
+          <td>
+            <%= bid.getBidderId()%> (<%= bid.getBidderRating() %> &#x2605;)
+          </td>
+          <td>
+            <%= bid.getAmount()%>
+          </td>
+          <td>
+            <%= bid.getTime()%>
+          </td>
+          <td>
+            <%= bid.getBidderLocation()%>, <%= bid.getBidderCountry()%>
+          </td>
+        </tr>
+      <% } %>
+    </tbody>
+  </table>
+
+  <% }
   if(buyPrice != null) { %>
     <p>Buy Price: <%= buyPrice%></p>
   <% } %>
 
   <p>Location: <%= location%>, <%= country%>
+
   <% if(longitude != null) {%>
     (<%= latitude%>, <%= longitude%> )
   <% } %>
