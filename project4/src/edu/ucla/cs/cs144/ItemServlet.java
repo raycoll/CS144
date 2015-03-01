@@ -12,8 +12,9 @@ public class ItemServlet extends HttpServlet implements Servlet {
     
     private Bid parseBid(Element bid) {
         Bid b = new Bid();
-        b.setBidderRating(bid.getAttribute("Rating"));
-        b.setBidderId(bid.getAttribute("UserID"));
+        Element bidder = (Element) bid.getElementsByTagName("Bidder").item(0);
+        b.setBidderRating(bidder.getAttribute("Rating"));
+        b.setBidderId(bidder.getAttribute("UserID"));
         b.setBidderLocation(bid.getElementsByTagName("Location").item(0).getFirstChild().getNodeValue());
         b.setBidderCountry(bid.getElementsByTagName("Country").item(0).getFirstChild().getNodeValue());
         b.setTime(bid.getElementsByTagName("Time").item(0).getFirstChild().getNodeValue());
