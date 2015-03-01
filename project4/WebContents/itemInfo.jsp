@@ -22,6 +22,9 @@
         height:30px;
         font-size: 16px;
       }
+      tr, td, th {
+        border-bottom: 1px solid #e2e2e2 !important;
+      }
 </style> 
 <script type="text/javascript" 
     src="http://maps.google.com/maps/api/js?sensor=false"> 
@@ -113,12 +116,12 @@ function initialize(lat, long, loc) {
 
 
   <div>Starting bid: <%= firstBid%></div>
-  <div>Current bid: <%=currentBid %> [ <%= numBids%> 
+  <p>Current bid: <%=currentBid %> [ <%= numBids%> 
   <% if(numBids.equals("1")) { %>
-      bid ]</div>
+      bid ]</p>
   <% 
   } else { %>
-      bids ]</div>
+      bids ]</p>
   <% } 
 
   if(!numBids.equals("0")) {
