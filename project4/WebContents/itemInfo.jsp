@@ -5,14 +5,13 @@
 <html>
 <head> 
 <meta name="viewport" content="initial-scale=1.0, user-scalable=no" /> 
+<link rel="stylesheet" href="style.css" type="text/css">
 <style type="text/css"> 
       html { height: 100% } 
       body { 
         height: 50%;
         margin: 0px;
         padding: 0px;
-        background-color:#D6F5FF;
-        font-family:"Helvetica Neue",Helvetica,Arial,Verdana,Sans-serif!important;
       } 
       #map_canvas { 
         height: 50%;
@@ -22,33 +21,6 @@
         width:400px;
         height:30px;
         font-size: 16px;
-      }
-
-      .submit {
-        font-size: 16px;
-        height:25px;
-        text-shadow: 0 1px 0 rgba(0,0,0,.2);
-        border-radius: 3px;
-        border: 0;
-        color: #fff;
-        text-shadow: 0 1px 0 rgba(0,0,0,0.17);
-        background-color: #00509d;
-        background-image: -webkit-gradient(linear,left bottom,left top,color-stop(0,#00509d),color-stop(1,#007abd));
-        background-image: -ms-linear-gradient(bottom,#00509d,#007abd);
-        background-image: -moz-linear-gradient(center bottom,#00509d 0,#007abd 100%);
-        background-image: -o-linear-gradient(#007abd,#00509d);
-        background-image: linear-gradient(to top,#00509d,#007abd);
-        filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#007abd',endColorstr='#00509d',GradientType=0);
-        -webkit-box-shadow: 0 2px 0 0 rgba(0,0,0,0.06);
-        -moz-box-shadow: 0 2px 0 0 rgba(0,0,0,0.06);
-        box-shadow: 0 2px 0 0 rgba(0,0,0,0.06);
-      }
-      .main{
-        margin:10px;
-         width: 960px;
-          display: block;
-          margin-left: auto;
-          margin-right: auto;
       }
 </style> 
 <script type="text/javascript" 
