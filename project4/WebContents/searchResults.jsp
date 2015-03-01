@@ -11,6 +11,21 @@
 			a {
 				text-decoration: none;
 			}
+			div.suggestions {
+    			-moz-box-sizing: border-box;
+    			box-sizing: border-box;
+    			border: 1px solid black;
+    			position: absolute; 
+    			background-color:white;
+			}
+			div.suggestions div {
+    			cursor: default;
+    			padding: 0px 3px;
+			}
+			div.suggestions div.current {
+    			background-color: #3366cc;
+    			color: white;
+			}
 			.item-links a:hover {
 				text-decoration: underline;
 			}
@@ -61,8 +76,14 @@
    				color:#d3d3d3 !important;
 			}
 		</style>
+		<script type="text/javascript">
+		     window.onload = function () {
+                var oTextbox = new AutoSuggestControl(document.getElementById("txt1")); 
+            }	
+		</script>
+		<script type="text/javascript" src="autosuggest.js"></script>
 	</head>
-	<body>
+	<body>	
 		<% 
 			SearchResult[] results= (SearchResult[]) request.getAttribute("results");
 			String q= (String) request.getAttribute("q");
@@ -76,7 +97,7 @@
 		%>
 		<div class=main>
 		<form action="http://localhost:1448/eBay/search" method="get">
-    		Search <input class="search" type="text" name="q" value="<%= q%>">
+    		Search <input id="txt1" class="search" type="text" name="q" value="<%= q%>">
     		<input type="hidden" name="numResultsToSkip" value="0">
    			<input type="hidden" name="numResultsToReturn" value="20">
     		<input class="submit" type="submit" value="Submit">
