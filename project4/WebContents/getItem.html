@@ -1,12 +1,26 @@
 
 <HTML>                                                                                                                                                                         
 <head>                                                                                                                                                                         
-  <title></title>                                                                                                                                                              
+  <title>Stevia Item Search</title>  
+  		<link rel="stylesheet" href="style.css" type="text/css">
+		<style>
+			body {
+				text-align: center;
+			}
+			#q {
+				margin-top:250px;
+			}
+			.search {
+				width:400px;
+				height:30px;
+				font-size: 16px;
+			}
+		</style>                                                                                                                                                            
 </head>                                                                                                                                                                        
 <body>                                                                                                                                                                         
-  <form action="http://localhost:1448/eBay/item" method="get">                                                                                                               
-    ItemId: <input type="text" name="id"><br>                                                                                                                                    
-    <input type="submit" value="Submit">                                                                                                                                       
+  <form id="q" action="http://localhost:1448/eBay/item" method="get">                                                                                                               
+    ItemId <input class="search" type="text" name="id">                                                                                                                                    
+    <input class="submit" type="submit" value="Submit">                                                                                                                                       
   </form>                                                                                                                                                                      
                                                                                                                                                                                
 </body>   
