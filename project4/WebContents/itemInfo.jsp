@@ -147,7 +147,12 @@ function initialize(lat, long, loc) {
             <%= bid.getTime()%>
           </td>
           <td>
-            <%= bid.getBidderLocation()%>, <%= bid.getBidderCountry()%>
+            <% if (bid.getBidderLocation() != null) { %>
+              <%= bid.getBidderLocation()%>, 
+            <% } %>
+             <% if (bid.getBidderCountry() != null) { %>
+              <%= bid.getBidderCountry()%>
+            <% } %>
           </td>
         </tr>
       <% } %>
