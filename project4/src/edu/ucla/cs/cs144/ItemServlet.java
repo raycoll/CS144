@@ -18,10 +18,20 @@ public class ItemServlet extends HttpServlet implements Servlet {
         Element bidder = (Element) bid.getElementsByTagName("Bidder").item(0);
         b.setBidderRating(bidder.getAttribute("Rating"));
         b.setBidderId(bidder.getAttribute("UserID"));
-        b.setBidderLocation(bidder.getElementsByTagName("Location").item(0).getFirstChild().getNodeValue());
-        NodeList countryTextNodes = bidder.getElementsByTagName("Country").item(0).getChildNodes();
-        if (countryTextNodes.getLength() != 0) {
-          b.setBidderCountry(countryTextNodes.item(0).getNodeValue());
+        NodeList locations = bidder.getElementsByTagName("Location");
+        if (locations.getLength() != 0) {
+          NodeList locationTextNodes = locations.item(0).getChildNodes();
+          if (locationTextNodes.getLength() != 0) {
+          b.setBidderLocation(locationTextNodes.item(0).getNodeValue());
+          }
+        }
+
+        NodeList countries = bidder.getElementsByTagName("Country");
+        if (countries.getLength() != 0) {
+          NodeList countryTextNodes = countries.item(0).getChildNodes();
+          if (countryTextNodes.getLength() != 0) {
+            b.setBidderCountry(countryTextNodes.item(0).getNodeValue());
+          }
         }
         b.setTime(bid.getElementsByTagName("Time").item(0).getFirstChild().getNodeValue());
         b.setAmount(bid.getElementsByTagName("Amount").item(0).getFirstChild().getNodeValue());
@@ -75,8 +85,11 @@ public class ItemServlet extends HttpServlet implements Servlet {
         }
         ib.setLocation(location.getFirstChild().getNodeValue());
         // add country
-        Element country = (Element) item.getElementsByTagName("Country").item(0);
+        NodeList countries = item.getElementsByTagName("Country");
+        if (countries.getLength() != 0) {
+        Element country = (Element) countries.item(countries.getLength() - 1);
         ib.setCountry(country.getFirstChild().getNodeValue());
+        }
         // add started
         ib.setStarted(item.getElementsByTagName("Started").item(0).getFirstChild().getNodeValue());
         // add Ends
@@ -94,13 +107,6 @@ public class ItemServlet extends HttpServlet implements Servlet {
             ib.setBuyPrice(buyPrice.item(0).getFirstChild().getNodeValue());
         }
         } catch(Exception e) {
-            StackTraceElement[] st = e.getStackTrace();
-            String s = "";
-            for (StackTraceElement el: st) {
-              String temp = el.toString() +  "\n";
-              s += temp;
-            }
-            ib.setId(s);
             return ib;
         }
 
