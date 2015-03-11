@@ -22,14 +22,10 @@ public class PayServlet extends HttpServlet implements Servlet {
         String name= (String)session.getAttribute("name");
         String buyPrice= (String)session.getAttribute("buyPrice");
 
-        if (!request.isSecure()){
-            request.setAttribute("isSecure", "false");
-        } else if (id == null || name == null || buyPrice == null) {
+        if (id == null || name == null || buyPrice == null) {
             request.setAttribute("badSession", "true");
-            request.setAttribute("isSecure", "true");
         } else {
             request.setAttribute("badSession", "false");
-            request.setAttribute("isSecure", "true");
             request.setAttribute("id",id);
             request.setAttribute("name", name);
             request.setAttribute("buyPrice", buyPrice);

@@ -167,8 +167,9 @@ function initialize(lat, long, loc) {
   </table>
 
   <% }
-  if(buyPrice != null) { %>
-    <div>Buy Price: <%= buyPrice%><a id="pay" class="submit" href="https://localhost:8443/eBay/pay">Pay Now</a></div>
+  if(buyPrice != null) {     
+  %>
+    <div>Buy Price: <%= buyPrice%><a id="pay" class="submit" href="http://localhost:1448/eBay/pay" >Pay Now</a></div>
     
   <% } %>
 

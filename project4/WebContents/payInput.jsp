@@ -37,21 +37,8 @@ function empty() {
 </script>
 
 <%
-  String isSecure= (String)request.getAttribute("isSecure");
   String badSession= (String)request.getAttribute("badSession");
-  if (isSecure.equals("false") || isSecure==null ) {
-
-%>
-  <title>Stevia's Site: Not Secure</title>
-  </head>
-  <body> 
-  <div class="main">
-    <h2>Request is not secure. Please use a secure channel.</h2>
-  </div>
-  </body>
-
-</html>
-<% } else if (badSession.equals("true")|| badSession==null ) {
+ if (badSession.equals("true")|| badSession==null ) {
 %>
   <title>Stevia's Site: Bad Session</title>
   </head>
