@@ -21,7 +21,6 @@
         text-align: center;
       }
 </style> 
-
 <%
   String badSession= (String)request.getAttribute("badSession");
   if (badSession.equals("true")|| badSession==null ) {
@@ -42,32 +41,27 @@
   String id= (String)request.getAttribute("id");
   String name= (String)request.getAttribute("name");
   String buyPrice= (String)request.getAttribute("buyPrice");
+  String cardNum= (String)request.getAttribute("cardNum");
 
-
+  SimpleDateFormat sdf = new SimpleDateFormat("MMMM dd, yyyy HH:mm:ss");
+  Date dt = new Date();
+  String date = sdf.format(dt);
 %> 
 
-
-<title>Purchasing <%= id%></title>
+<title>Confirm Purchase for <%= id%></title>
 </head>
 
 <body> 
 <div class="main">
-  
-  <h2>Purchasing</h2>
+  <h1>Confirm Purchase</h1>
   <p>ItemID: <%= id%></p>
   <p>Item Name: <%= name%></p>
   <p>Buy Price: <%= buyPrice%> </p>
-
- <form action="https://localhost:8443/eBay/confirm" method="get">
-    Credit Card <input class="search" type="text" name="cardNum">
-    <input class="submit" type="submit" value="Submit">
-  </form>
+  <p>Credit Card: <%= cardNum%> </p>
+  <p>Time: <%= date%></p>
 
 </div>
 </body>
 
 </html>
-<%
-}
-%>
-
+<% } %>
