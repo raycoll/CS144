@@ -85,7 +85,7 @@ function empty() {
   <p>Item Name: <%= name%></p>
   <p>Buy Price: <%= buyPrice%> </p>
 
- <form action="https://localhost:8443/eBay/confirm" method="get">
+ <form action="https://localhost:8443/eBay/confirm" method="post">
     Credit Card <input id="num" class="search" type="text" name="cardNum">
     <input class="submit" type="submit" onClick="return empty()" value="Submit">
   </form>

@@ -13,7 +13,7 @@ public class ConfirmServlet extends HttpServlet implements Servlet {
        
     public ConfirmServlet() {}
 
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
     {
         HttpSession session = request.getSession(true);
 
