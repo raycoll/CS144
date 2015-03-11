@@ -23,9 +23,13 @@ public class ConfirmServlet extends HttpServlet implements Servlet {
 
         String cardNum = request.getParameter("cardNum");
 
-        if (id == null || name == null || buyPrice == null || cardNum==null) {
+        if (!request.isSecure()){
+            request.setAttribute("isSecure", "false");
+        } else if (id == null || name == null || buyPrice == null || cardNum==null) {
             request.setAttribute("badSession", "true");
+            request.setAttribute("isSecure", "true");
         } else {
+            request.setAttribute("isSecure", "true");
             request.setAttribute("badSession", "false");
             request.setAttribute("id",id);
             request.setAttribute("name", name);

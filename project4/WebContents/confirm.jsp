@@ -22,10 +22,23 @@
       }
 </style> 
 <%
+  String isSecure= (String)request.getAttribute("isSecure");
   String badSession= (String)request.getAttribute("badSession");
-  if (badSession.equals("true")|| badSession==null ) {
+  if (isSecure.equals("false") || isSecure==null ) {
+
 %>
-  <title>Bad Session</title>
+  <title>Stevia's Site: Not Secure</title>
+  </head>
+  <body> 
+  <div class="main">
+    <h2>Request is not secure. Please use a secure channel.</h2>
+  </div>
+  </body>
+
+</html>
+<% } else if (badSession.equals("true")|| badSession==null ) {
+%>
+  <title>Stevia's Site: Bad Session</title>
   </head>
   <body> 
   <div class="main">
@@ -34,6 +47,8 @@
   </body>
 
 </html>
+
+
 <% 
 } else {
 
@@ -53,7 +68,7 @@
 
 <body> 
 <div class="main">
-  <h1>Confirm Purchase</h1>
+  <h1>Purchase Confirmed</h1>
   <p>ItemID: <%= id%></p>
   <p>Item Name: <%= name%></p>
   <p>Buy Price: <%= buyPrice%> </p>

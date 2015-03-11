@@ -20,13 +20,40 @@
       h2 {
         text-align: center;
       }
+      #alert {
+        font-size:12;
+        color:gray;
+      }
 </style> 
+<script type="text/javascript">
+function empty() {
+    var x;
+    x = document.getElementById("num").value;
+    if (x == "") {
+        document.getElementById("alert").innerHTML+= "Please Enter a Credit Card Number";
+        return false;
+    };
+}
+</script>
 
 <%
+  String isSecure= (String)request.getAttribute("isSecure");
   String badSession= (String)request.getAttribute("badSession");
-  if (badSession.equals("true")|| badSession==null ) {
+  if (isSecure.equals("false") || isSecure==null ) {
+
 %>
-  <title>Bad Session</title>
+  <title>Stevia's Site: Not Secure</title>
+  </head>
+  <body> 
+  <div class="main">
+    <h2>Request is not secure. Please use a secure channel.</h2>
+  </div>
+  </body>
+
+</html>
+<% } else if (badSession.equals("true")|| badSession==null ) {
+%>
+  <title>Stevia's Site: Bad Session</title>
   </head>
   <body> 
   <div class="main">
@@ -59,9 +86,10 @@
   <p>Buy Price: <%= buyPrice%> </p>
 
  <form action="https://localhost:8443/eBay/confirm" method="get">
-    Credit Card <input class="search" type="text" name="cardNum">
-    <input class="submit" type="submit" value="Submit">
+    Credit Card <input id="num" class="search" type="text" name="cardNum">
+    <input class="submit" type="submit" onClick="return empty()" value="Submit">
   </form>
+  <p id="alert"></p>
 
 </div>
 </body>
