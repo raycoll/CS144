@@ -25,6 +25,9 @@
       tr, td, th {
         border-bottom: 1px solid #e2e2e2 !important;
       }
+      button {
+        margin:10px;
+      }
 </style> 
 <script type="text/javascript" 
     src="http://maps.google.com/maps/api/js?sensor=false"> 
@@ -161,7 +164,8 @@ function initialize(lat, long, loc) {
 
   <% }
   if(buyPrice != null) { %>
-    <p>Buy Price: <%= buyPrice%></p>
+    <div>Buy Price: <%= buyPrice%><button class="submit" type="button">Pay Now</button></div>
+    
   <% } %>
 
   <p>Location: <%= location%>, <%= country%>
