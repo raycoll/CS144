@@ -25,8 +25,9 @@
       tr, td, th {
         border-bottom: 1px solid #e2e2e2 !important;
       }
-      button {
+      a {
         margin:10px;
+        padding:2px 6px 3px 6px;
       }
 </style> 
 <script type="text/javascript" 
@@ -96,6 +97,9 @@ function initialize(lat, long, loc) {
     String sellerId = ib.getSellerId();
     String description = ib.getDescription();
 
+    session.setAttribute("id", id);
+    session.setAttribute("name", name);
+    session.setAttribute("buyPrice", buyPrice);
 %>
 <title>Stevia's Site: itemID <%= id%></title>
 </head>
@@ -164,7 +168,7 @@ function initialize(lat, long, loc) {
 
   <% }
   if(buyPrice != null) { %>
-    <div>Buy Price: <%= buyPrice%><button class="submit" type="button">Pay Now</button></div>
+    <div>Buy Price: <%= buyPrice%><a id="pay" class="submit" href="http://localhost:1448/eBay/pay">Pay Now</a></div>
     
   <% } %>
 

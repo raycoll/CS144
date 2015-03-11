@@ -116,6 +116,8 @@ public class ItemServlet extends HttpServlet implements Servlet {
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
     {
+        HttpSession session = request.getSession(true);
+        
 	String itemId = request.getParameter("id");
 	String itemXml = AuctionSearchClient.getXMLDataForItemId(itemId);
 	if (itemXml.equals("")) { 

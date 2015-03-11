@@ -16,6 +16,14 @@
         <url-pattern>/item</url-pattern>
     </servlet-mapping>
     <servlet>
+        <servlet-name>PayServlet</servlet-name>
+        <servlet-class>edu.ucla.cs.cs144.PayServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>PayServlet</servlet-name>
+        <url-pattern>/pay</url-pattern>
+    </servlet-mapping>
+    <servlet>
         <servlet-name>ProxyServlet</servlet-name>
         <servlet-class>edu.ucla.cs.cs144.ProxyServlet</servlet-class>
     </servlet>
