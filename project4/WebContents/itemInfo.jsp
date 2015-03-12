@@ -167,9 +167,14 @@ function initialize(lat, long, loc) {
   </table>
 
   <% }
-  if(buyPrice != null) {     
+  if(buyPrice != null) { 
+  String serverName=request.getServerName();
+  String serverPort = Integer.toString(request.getServerPort());
+  String contextPath=request.getContextPath();
+
+  String url="\"http://"+serverName+":"+serverPort+contextPath+"/pay\"";    
   %>
-    <div>Buy Price: <%= buyPrice%><a id="pay" class="submit" href="http://localhost:1448/eBay/pay" >Pay Now</a></div>
+    <div>Buy Price: <%= buyPrice%><a id="pay" class="submit" href=<%= url%> >Pay Now</a></div>
     
   <% } %>
 

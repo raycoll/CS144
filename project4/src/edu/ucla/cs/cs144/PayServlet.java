@@ -26,6 +26,7 @@ public class PayServlet extends HttpServlet implements Servlet {
             request.setAttribute("badSession", "true");
         } else {
             request.setAttribute("badSession", "false");
+
             request.setAttribute("id",id);
             request.setAttribute("name", name);
             request.setAttribute("buyPrice", buyPrice);

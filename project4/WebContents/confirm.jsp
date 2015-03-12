@@ -42,7 +42,7 @@
   </head>
   <body> 
   <div class="main">
-    <h2>Bad Session. To purchase item, please press "Pay Now" on the item page.</h2>
+    <h2>Bad Session.</h2>
   </div>
   </body>
 

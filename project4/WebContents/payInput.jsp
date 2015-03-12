@@ -56,7 +56,10 @@ function empty() {
   String id= (String)request.getAttribute("id");
   String name= (String)request.getAttribute("name");
   String buyPrice= (String)request.getAttribute("buyPrice");
+  String serverName=request.getServerName();
+  String contextPath=request.getContextPath();
 
+  String url="\"https://"+serverName+":8443"+contextPath+"/confirm\"";
 
 %> 
 
@@ -72,7 +75,7 @@ function empty() {
   <p>Item Name: <%= name%></p>
   <p>Buy Price: <%= buyPrice%> </p>
 
- <form action="https://localhost:8443/eBay/confirm" method="post">
+ <form action=<%= url%> method="post">
     Credit Card <input id="num" class="search" type="text" name="cardNum">
     <input class="submit" type="submit" onClick="return empty()" value="Submit">
   </form>
