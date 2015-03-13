@@ -30,7 +30,7 @@ function empty() {
     var x;
     x = document.getElementById("num").value;
     if (x == "") {
-        document.getElementById("alert").innerHTML+= "Please Enter a Credit Card Number";
+        document.getElementById("alert").innerHTML= "Please Enter a Credit Card Number";
         return false;
     };
 }
@@ -38,7 +38,7 @@ function empty() {
 
 <%
   String badSession= (String)request.getAttribute("badSession");
- if (badSession.equals("true")|| badSession==null ) {
+ if (badSession.equals("true")|| badSession==null || session.getAttribute("id") ==null) {
 %>
   <title>Stevia's Site: Bad Session</title>
   </head>

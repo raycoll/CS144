@@ -36,7 +36,7 @@
   </body>
 
 </html>
-<% } else if (badSession.equals("true")|| badSession==null ) {
+<% } else if (badSession.equals("true")|| badSession==null || session.getAttribute("id") ==null) {
 %>
   <title>Stevia's Site: Bad Session</title>
   </head>
